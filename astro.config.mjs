@@ -5,6 +5,6 @@ import sitemap from "@astrojs/sitemap";
 
 // https://astro.build/config
 export default defineConfig({
-  site: "https://kaminzhi.github.io",
+  site: "https://www.kaminzhi.com",
   integrations: [mdx(), sitemap()],
 });
