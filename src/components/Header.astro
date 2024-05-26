@@ -1,17 +1,19 @@
 ---
 import HeaderLink from './HeaderLink.astro';
 import { SITE_TITLE } from '../consts';
+import { IoLogoGithub } from 'react-icons/io5';
+import FootprintIcon from './icons/footprint';
 ---
 
 <header class="fixed w-full pq2 z-20 backdrop-blur-md">
   <div class="mx-auto max-w-3xl">
 	  <nav class="flex items-center gap-3 text-base">
-	  	<h2 class="font-semibold tracking-tighter p-2 font-mplus text-lg">{SITE_TITLE}</h2>
+      <h2 class="font-semibold tracking-tighter p-2 font-mplus text-xl"><FootprintIcon/>{SITE_TITLE}</h2>
 		  <div class="items-center gap-6 hidden md:flex">
 			  <HeaderLink href="/">Home</HeaderLink>
 			  <HeaderLink href="/blog">Project</HeaderLink>
-			  <HeaderLink href="/about">About</HeaderLink>
+        <HeaderLink href="https://github.com/kaminzhi/kaminzhi.github.io" target="_blank"><IoLogoGithub />Source</HeaderLink>
 		  </div>
-      </nav>
+    </nav>
   </div>
 </header>
