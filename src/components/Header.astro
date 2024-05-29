@@ -1,19 +1,29 @@
 ---
-import HeaderLink from './HeaderLink.astro';
-import { SITE_TITLE } from '../config';
-import { IoLogoGithub } from 'react-icons/io5';
-import FootprintIcon from './icons/footprint';
+import HeaderLink from './HeaderLink.astro'
+import { HOMEPAGE_URL, SITE_TITLE } from '../config'
+import { IoLogoGithub } from 'react-icons/io5/index.js'
+import FootprintIcon from './icons/footprint'
+import ThemeToggle from './ThemeToggleButton'
 ---
 
-<header class="fixed w-full pq2 z-20 backdrop-blur-md">
+<header class="fixed w-full p-2 z-20 backdrop-blur-md">
   <div class="mx-auto max-w-3xl">
-	  <nav class="flex items-center gap-3 text-base">
-      <h2 class="font-semibold tracking-tighter p-2 font-mplus text-xl"><FootprintIcon/>{SITE_TITLE}</h2>
-		  <div class="items-center gap-6 hidden md:flex">
-			  <HeaderLink href="/">Home</HeaderLink>
-			  <HeaderLink href="/blog">Project</HeaderLink>
-        <HeaderLink href="https://github.com/kaminzhi/kaminzhi.github.io" target="_blank"><IoLogoGithub />Source</HeaderLink>
-		  </div>
+    <nav class="flex items-center gap-3 text-base">
+      <a href="/" class="group">
+        <h2 class="font-semibold tracking-tighter p-2 font-mplus text-lg">
+          <FootprintIcon />
+          {SITE_TITLE}
+        </h2>
+      </a>
+      <div class="items-center gap-6 hidden md:flex">
+        <HeaderLink href={HOMEPAGE_URL}>About</HeaderLink>
+        <HeaderLink href="https://github.com/withastro/astro" target="_blank"
+          ><IoLogoGithub />Source</HeaderLink
+        >
+      </div>
+      <div class="flex-1"></div>
+      <ThemeToggle client:load />
     </nav>
   </div>
 </header>
+
