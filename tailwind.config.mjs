@@ -1,11 +1,11 @@
 /** @type {import('tailwindcss').Config} */
-export default {
+module.exports = {
   content: ["./src/**/*.{astro,html,js,jsx,md,mdx,svelte,ts,tsx,vue}"],
-  darlMode: "class",
+  darkMode: "class",
   theme: {
     extend: {
       fontFamily: {
-        mplus: ["Noto Sans TC", "sans-serif", "Verdana"],
+        mplus: ["'Noto Sans TC'", "Verdana", "sans-serif"],
       },
     },
   },
