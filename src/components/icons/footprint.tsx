@@ -10,7 +10,7 @@ export default function Footprint() {
       //xmlns:svg="http://www.w3.org/2000/svg"
       id="svg2"
       viewBox="0 0 400 390"
-      version="1.0"
+      fill="currentColor"
       className="w-6 inline-block transition-transform group-hover:rotate-[20deg]"
     >
       <path
