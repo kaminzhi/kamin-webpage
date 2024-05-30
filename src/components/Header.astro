@@ -4,6 +4,7 @@ import { HOMEPAGE_URL, SITE_TITLE } from '../config'
 import { IoLogoGithub } from 'react-icons/io5'
 import FootprintIcon from './icons/footprint'
 import ThemeSwitcher from './ThemeToggleButton'
+import Menulist from './Menulist'
 ---
 <header class="fixed w-full p-2 z-20 backdrop-blur-md">
   <div class="mx-auto max-w-3xl">
@@ -22,6 +23,7 @@ import ThemeSwitcher from './ThemeToggleButton'
       </div>
       <div class="flex-1"></div>
       <ThemeSwitcher client:visible />
+      <Menulist client:visible />
     </nav>
   </div>
 </header>
