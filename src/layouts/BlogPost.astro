@@ -1,85 +1,88 @@
 ---
-import type { CollectionEntry } from 'astro:content';
-import BaseHead from '../components/BaseHead.astro';
-import Header from '../components/Header.astro';
-import Footer from '../components/Footer.astro';
-import FormattedDate from '../components/FormattedDate.astro';
+import BaseHead from '../components/BaseHead.astro'
+import Header from '../components/Header.astro'
+import Footer from '../components/Footer.astro'
+import Body from '../components/Body.astro'
+import Content from '../components/Content.astro'
+import { SITE_TITLE } from '../config'
 
-type Props = CollectionEntry<'blog'>['data'];
+export interface Props {
+  content: {
+    title: string
+    description: string
+    createdAt?: string
+    updatedAt?: string
+    heroImage?: string
+    tags: string[]
+  }
+}
 
-const { title, description, pubDate, updatedDate, heroImage } = Astro.props;
+const {
+  content: { title, description, heroImage }
+} = Astro.props
 ---
 
+<!DOCTYPE html>
 <html lang="en">
-	<head>
-		<BaseHead title={title} description={description} />
-		<style>
-			main {
-				width: calc(100% - 2em);
-				max-width: 100%;
-				margin: 0;
-			}
-			.hero-image {
-				width: 100%;
-			}
-			.hero-image img {
-				display: block;
-				margin: 0 auto;
-				border-radius: 12px;
-				box-shadow: var(--box-shadow);
-			}
-			.prose {
-				width: 720px;
-				max-width: calc(100% - 2em);
-				margin: auto;
-				padding: 1em;
-				color: rgb(var(--gray-dark));
-			}
-			.title {
-				margin-bottom: 1em;
-				padding: 1em 0;
-				text-align: center;
-				line-height: 1;
-			}
-			.title h1 {
-				margin: 0 0 0.5em 0;
-			}
-			.date {
-				margin-bottom: 0.5em;
-				color: rgb(var(--gray));
-			}
-			.last-updated-on {
-				font-style: italic;
-			}
-		</style>
-	</head>
+  <head>
+    <BaseHead title={title + ` / ${SITE_TITLE}`} description={description} image={heroImage} />
+  </head>
 
-	<body>
-		<Header />
-		<main>
-			<article>
-				<div class="hero-image">
-					{heroImage && <img width={400} height={510} src={heroImage} alt="" />}
-				</div>
-				<div class="prose">
-					<div class="title">
-						<div class="date">
-							<FormattedDate date={pubDate} />
-							{
-								updatedDate && (
-									<div class="last-updated-on">
-										Last updated on <FormattedDate date={updatedDate} />
-									</div>
-								)
-							}
-						</div>
-						<h1>{title}</h1>
-						<hr />
-					</div>
-					<slot />
-				</div>
-			</article>
-		</main>
-		<Footer />
-	</body>
+  <Body>
+    <Header />
+    <style global>
+    main article.markdown-body {
+      ul {
+        @apply list-disc list-inside pl-4 mb-4
+      }
+      h1, h2, h3, h4, h5 {
+        @apply font-bold font-mplus
+      }
+      h1 {
+        @apply text-4xl
+      }
+      h2 {
+        @apply text-2xl
+      }
+      h3 {
+        @apply text-xl
+      }
+      h4 {
+        @apply text-lg
+      }
+      img {
+        @apply border border-slate-300 dark:border-zinc-700 rounded-xl mb-6
+      }
+      p {
+        @apply mb-6
+      }
+      a {
+        @apply underline underline-offset-2 hover:text-orange-500 decoration-orange-500
+      }
+    }
+    </style>
+
+    <main class="pt-[56px]">
+      <Content className="pt-6 markdown-body">
+        <div class="mb-8">
+          {
+            heroImage && (
+              <img
+                class="border border-slate-300 dark:border-zinc-700 rounded-xl"
+                width={720}
+                height={360}
+                src={heroImage}
+                alt=""
+              />
+            )
+          }
+        </div>
+        <h1 class="text-3xl my-1 font-mplus">{title}</h1>
+        <div>{description}</div>
+        <hr class="border-top border-zinc-400 my-4" />
+        <slot />
+      </Content>
+    </main>
+    <Footer />
+  </Body>
 </html>
