@@ -1,8 +1,9 @@
 ---
-export interface IProps {
-  className?: string;
+export interface Props {
+  className?: string
 }
-const { className = '' } = Astro.props;
+
+const { className = '' } = Astro.props
 ---
 
-<article className={`px-8 mx-auto max-w-3xl #{className}`} ><slot /></article>
+<article class={`px-8 mx-auto max-w-3xl ${className}`}><slot /></article>
