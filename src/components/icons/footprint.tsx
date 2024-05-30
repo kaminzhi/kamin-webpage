@@ -11,7 +11,7 @@ export default function Footprint() {
       id="svg2"
       viewBox="0 0 400 390"
       fill="currentColor"
-      className="w-6 inline-block transition-transform group-hover:rotate-[20deg]"
+      className="w-6 inline-block transition-transform group-hover:rotate-[360deg]"
     >
       <path
         id="path1891"

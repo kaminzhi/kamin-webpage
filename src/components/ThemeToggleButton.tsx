@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { IoSunny, IoMoon } from "react-icons/io5";
+import { BsMoonStarsFill, BsFillSunFill } from "react-icons/bs";
 
 const themes = ["light", "dark"];
 
-export default function ThemeToggle() {
+export default function Toggle() {
   const [isMounted, setIsMounted] = useState(false);
   const [theme, setTheme] = useState(() => {
     if (import.meta.env.SSR) {
@@ -17,7 +17,7 @@ export default function ThemeToggle() {
     }
     return "light";
   });
-  const toggleTheme = () => {
+  const switcher = () => {
     const t = theme === "light" ? "dark" : "light";
     localStorage.setItem("theme", t);
     setTheme(t);
@@ -46,10 +46,10 @@ export default function ThemeToggle() {
             className={`${
               checked ? "bg-white text-black" : ""
             } cursor-pointer rounded-3xl p-2`}
-            onClick={toggleTheme}
+            onClick={switcher}
             aria-label="Toggle theme"
           >
-            {t === "light" ? <IoSunny /> : <IoMoon />}
+            {t === "light" ? <BsFillSunFill /> : <BsMoonStarsFill />}
           </button>
         );
       })}
