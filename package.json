@@ -12,6 +12,7 @@
     "live-import": "node --experimental-vm-modules tools/import.mjs"
   },
   "dependencies": {
+    "@astrojs/check": "^0.7.0",
     "@astrojs/image": "^0.18.0",
     "@astrojs/react": "3.4.0",
     "@astrojs/rss": "4.0.6",
@@ -22,7 +23,8 @@
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
     "react-icons": "^4.4.0",
-    "tailwindcss": "^3.4.3"
+    "tailwindcss": "^3.4.3",
+    "typescript": "^5.4.5"
   },
   "devDependencies": {
     "@types/react": "^18.0.20",
