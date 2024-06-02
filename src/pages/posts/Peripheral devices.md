@@ -1,6 +1,6 @@
 ---
 layout: '../../layouts/BlogPost.astro'
-title: 'Peripheral Devices.'
+title: 'Peripheral Devices'
 description: 'What peripheral devices are essential for programming or gaming?'
 pubDate: 'June 02 2024'
 HeadImage: '/Desk_Device/Desk.jpg'
