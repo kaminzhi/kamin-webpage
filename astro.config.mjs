@@ -1,14 +1,13 @@
 import { defineConfig } from 'astro/config'
 import sitemap from '@astrojs/sitemap'
 import react from '@astrojs/react'
-import image from '@astrojs/image'
 import tailwind from '@astrojs/tailwind'
 import addClasses from 'rehype-add-classes'
 
 // https://astro.build/config
 export default defineConfig({
   site: 'https://uses.craftz.dog/',
-  integrations: [sitemap(), react(), image(), tailwind()],
+  integrations: [sitemap(), react(), tailwind()],
   markdown: {
     extendDefaultPlugins: true,
     rehypePlugins: [
@@ -23,7 +22,7 @@ export default defineConfig({
           h6: 'font-bold font-mplus',
           img: 'border border-slate-300 dark:border-zinc-700 rounded-xl mb-6',
           p: 'mb-6',
-          a: 'underline underline-offset-2 hover:text-orange-500 decoration-orange-500'
+          a: 'underline underline-offset-2 hover:text-blue-500 decoration-orange-500'
         }
       ]
     ]

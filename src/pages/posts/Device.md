@@ -2,8 +2,8 @@
 layout: '../../layouts/BlogPost.astro'
 title: 'My Development Device'
 description: 'What device I use for development'
-pubDate: 'Jul 15 2022'
-Image: '/blade_15_table.jpg'
+pubDate: 'June 02 2024'
+HeadImage: '/blade_15_table.jpg'
 ---
 
 A computer is essential for programming. It provides the necessary tools and environment to write, test, and debug code efficiently. Without a computer, developing software and running complex simulations would be impossible.

@@ -12,20 +12,20 @@ export interface Props {
     description: string
     createdAt?: string
     updatedAt?: string
-    Image?: string
+    HeadImage?: string
     tags: string[]
   }
 }
 
 const {
-  content: { title, description, Image }
+  content: { title, description, HeadImage }
 } = Astro.props
 ---
 
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <BaseHead title={title + ` / ${SITE_TITLE}`} description={description} image={Image} />
+    <BaseHead title={title + ` / ${SITE_TITLE}`} description={description} image={HeadImage} />
   </head>
 
   <Body>
@@ -81,7 +81,7 @@ const {
           </div>
           <p align="center">
             <img class="border-top border-slate-300 dark:border-slate-700 rounded-xl" 
-              src={Image} 
+              src={HeadImage} 
               width={240} 
               height=auto>
           </p>

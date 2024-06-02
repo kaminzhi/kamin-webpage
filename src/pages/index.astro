@@ -1,4 +1,5 @@
 ---
+import type { ImageMetadata } from 'astro';
 import BaseHead from '../components/BaseHead.astro'
 import Header from '../components/Header.astro'
 import Footer from '../components/Footer.astro'
@@ -6,6 +7,11 @@ import { SITE_TITLE, SITE_DESCRIPTION } from '../config'
 import Body from '../components/Body.astro'
 import Content from '../components/Content.astro'
 import Masthead from '../components/Masthead.astro'
+
+import { Image } from 'astro:assets';
+
+const images = import.meta.glob<{ default: ImageMetadata }>('/src/assets/*.{jpeg,jpg,png,gif}');
+console.log('images:', images)
 
 const posts = (await Astro.glob('./posts/*.md')).sort(
   (a: any, b: any) =>
@@ -33,14 +39,35 @@ const posts = (await Astro.glob('./posts/*.md')).sort(
         <section>
           <ul class="grid grid-cols-1 md:grid-cols-2 gap-4">
             {
-              posts.map(post => (
-                <li class="text-center mb-4">
-                  <a href={post.url}> 
-                    <div class="mt-3 text-xl">{post.frontmatter.title}</div>
-                    <div class="opacity-70">{post.frontmatter.description}</div>
+            posts.map(post => {
+                const HeadImagePath = post.frontmatter.HeadImage;
+                const HeadImageAsset = images[HeadImagePath];
+                const HeadImageSrc = HeadImageAsset ? HeadImageAsset.default : HeadImagePath;
+
+                console.log('HeadImageSrc:', HeadImageSrc);
+
+                return (
+                <li class="text-center mb-4" key={post.url}>
+                  <a href={post.url}>
+                    <Image
+                      class="border border-slate-300 dark:border-zinc-700 rounded-xl"
+                      src={HeadImageSrc || '/path/to/default/image.jpg'}
+                      width={720}
+                      height={720 / 1.777}
+                      alt="Thumbnail"
+                    />
+                    <div class="mt-3 text-xl font-bold">
+                      {post.frontmatter.title}
+                    </div>
+                    {post.frontmatter.description && (
+                      <div class="opacity-70">
+                        {post.frontmatter.description}
+                      </div>
+                    )}
                   </a>
                 </li>
-              ))
+              )
+              })
             }
           </ul>
         </section>

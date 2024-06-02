@@ -12,20 +12,20 @@ export interface Props {
     description: string
     createdAt?: string
     updatedAt?: string
-    Image?: string
+    HeadImage?: string
     tags: string[]
   }
 }
 
 const {
-  content: { title, description, Image }
+  content: { title, description, HeadImage }
 } = Astro.props
 ---
 
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <BaseHead title={title + ` / ${SITE_TITLE}`} description={description} image={Image} />
+    <BaseHead title={title + ` / ${SITE_TITLE}`} description={description} image={HeadImage} />
   </head>
 
   <Body>
@@ -66,12 +66,12 @@ const {
       <Content className="pt-6 markdown-body">
         <div class="mb-8">
           {
-            Image && (
+            HeadImage && (
               <img
                 class="border border-slate-300 dark:border-zinc-700 rounded-xl"
                 width={720}
                 height={360}
-                src={Image}
+                src={HeadImage}
                 alt=""
               />
             )
