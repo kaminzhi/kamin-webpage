@@ -3,4 +3,5 @@
 
 export const SITE_TITLE = 'kamin_zhi'
 export const SITE_DESCRIPTION = "Life Suck, But I'm Still Here."
-export const HOMEPAGE_URL = 'https://www.kaminzhi.com'
+export const HOMEPAGE_URL = 'https://webpage.kaminzhi.com'
+export const REPOSITORIES_URL = 'https://github.com/kaminzhi?tab=repositories'
