@@ -31,9 +31,18 @@ const {
   <Body>
     <Header />
     <style>
+    .container{
+      display:flex; /*一開始需要在父層宣告為 flex 才有效*/
+    }
+    .item-right{
+      flex:1; /*對應子層加上；1數值是內元件之間佔的比例*/
+    }
+    .item-left{
+      flex:1; /*對應子層加上*/
+    }
     main article.markdown-body {
       ul {
-        @apply list-disc list-inside pl-4 mb-4
+        @apply list-disc list-inside pl-4 mb-4 text-zinc-900 dark:text-orange-300
       }
       h1, h2, h3, h4, h5 {
         @apply font-bold font-mplus
@@ -57,29 +66,27 @@ const {
         @apply mb-6
       }
       a {
-        @apply underline underline-offset-2 hover:text-orange-500 decoration-orange-500
+        @apply underline underline-offset-2 hover:text-blue-500 decoration-blue-500
       }
     }
     </style>
 
     <main class="pt-[56px]">
       <Content className="pt-6 markdown-body">
-        <div class="mb-8">
-          {
-            Image && (
-              <img
-                class="border border-slate-300 dark:border-zinc-700 rounded-xl"
-                width={720}
-                height={360}
-                src={Image}
-                alt=""
-              />
-            )
-          }
-        </div>
-        <h1 class="text-3xl my-1 font-mplus">{title}</h1>
-        <div>{description}</div>
-        <hr class="border-top border-zinc-400 my-4" />
+        <ul class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <br><br>
+            <h1 align="center" class="text-5xl my-4 font-mplus">{title}</h1>
+            <h1 align="center" class="text-green-600 dark:text-orange-500 my-3 font-mplus">{description}</h1>
+          </div>
+          <p align="center">
+            <img class="border-top border-slate-300 dark:border-slate-700 rounded-xl" 
+              src={Image} 
+              width={240} 
+              height=auto>
+          </p>
+        </ul>
+        <hr class="border-top border-zinc-400 my-7" />
         <slot />
       </Content>
     </main>
