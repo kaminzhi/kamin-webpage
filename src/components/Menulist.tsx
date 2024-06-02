@@ -26,11 +26,16 @@ export default function Menulist() {
       >
         <Menu.Items className="absolute right-0 z-10 mt-2 w-56 origin-top-right rounded-md border border-zinc-400 dark:border-zinc-700 bg-pink-200 dark:bg-zinc-800 shadow-xl ring-1 ring-black ring-opacity-5 focus:outline-none divide-zinc-400 dark:divide-zinc-700">
           <div className="py-1">
-            <div className="px-3 py-2 uppercase font-bold text-xs">Menu</div>
+            <div
+              align="center"
+              className="px-3 py-2 uppercase font-bold text-xl"
+            >
+              Menu
+            </div>
             <MenulistItem href="/posts/Develop Editor">
               Develop Editor
             </MenulistItem>
-            <MenulistItem href="/posts/Device">Desk</MenulistItem>
+            <MenulistItem href="/posts/Device">Computer</MenulistItem>
             <MenulistItem href="/posts/Peripheral devices">
               Peripheral Devices
             </MenulistItem>
