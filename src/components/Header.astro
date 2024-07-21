@@ -1,6 +1,6 @@
 ---
 import HeaderLink from './HeaderLink.astro'
-import { HOMEPAGE_URL, SITE_TITLE, REPOSITORIES_URL } from '../config'
+import { HOMEPAGE_URL, SITE_TITLE, REPOSITORIES_URL, PROJECT_URL } from '../config'
 import { IoLogoGithub } from 'react-icons/io5'
 import FootprintIcon from './icons/footprint'
 import ThemeSwitcher from './ThemeToggleButton'
@@ -17,7 +17,7 @@ import Menulist from './Menulist'
       </a>
       <div class="items-center gap-6 hidden md:flex">
         <HeaderLink href={REPOSITORIES_URL}><IoLogoGithub/>My Repo</HeaderLink>
-        <HeaderLink href="https://github.com/kaminzhi/kaminzhi.github.io" target="_blank"
+        <HeaderLink href={PROJECT_URL} target="_blank"
           ><IoLogoGithub />Source</HeaderLink
         >
       </div>
