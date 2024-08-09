@@ -1,10 +1,11 @@
 ---
-import { HOMEPAGE_URL } from '../config';
+import { HOMEPAGE_URL, UPDATETIME } from '../config';
 
 const today = new Date();
 ---
 
 <footer class="text-zinc-500 p-4 text-center">
+  Last Update : {UPDATETIME} 💻 <br>
   Created With Astro, React, and Tailwind CSS.<br>
 &copy; {today.getFullYear()} Made By <a href={HOMEPAGE_URL}>kamin_zhi</a>. All rights reserved.
 	<div class="social-links">
