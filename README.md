@@ -1,6 +1,7 @@
 # kamin_zhi's Blogsite
 
-用Astro製作的個人Blog網站
+用Astro製作的個人Blog網站(期末作業)
+:)
 
 ## 🚀 Project Structure
 
