@@ -217,8 +217,7 @@ const WifiPanel: React.FC<WifiPanelProps> = ({ isOpen }) => {
   return (
     <div 
       className={`
-        absolute top-14 right-4 
-        md:w-80 w-[90vw]
+        absolute top-14 right-4 w-80
         bg-black bg-opacity-80 backdrop-blur-md rounded-lg shadow-xl
         transition-all duration-300 transform origin-top-right
         ${isOpen ? 'scale-100 opacity-100' : 'scale-95 opacity-0 pointer-events-none'}

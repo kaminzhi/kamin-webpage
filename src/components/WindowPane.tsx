@@ -22,19 +22,21 @@ const WindowPane: React.FC<WindowPaneProps> = ({
       className={`
         bg-white bg-opacity-40 backdrop-blur-md rounded-lg shadow-xl overflow-hidden
         fixed 
-        md:top-16 md:left-1/2
-        top-0 left-0 w-full h-full md:h-auto
+        md:top-16 md:left-1/2 top-0 left-0
         transition-all duration-500 ease-in-out
-        ${type === 'blog' ? 'md:w-[95vw]' : 'md:w-full md:max-w-4xl'}
+        ${type === 'blog' ? 'w-full md:w-[95vw]' : 'w-full md:max-w-4xl'}
         ${isActive 
-          ? 'opacity-100 z-30 md:-translate-x-1/2 md:translate-y-0' 
-          : 'opacity-0 z-20 pointer-events-none md:-translate-x-1/2 md:translate-y-[60vh]'}
+          ? 'opacity-100 z-30 md:-translate-x-1/2 translate-y-0' 
+          : 'opacity-0 z-20 pointer-events-none md:-translate-x-1/2 translate-y-[60vh]'}
+        mb-20 md:mb-24
+        max-h-[calc(100vh-5rem)] md:max-h-[calc(100vh-9rem)]
+        h-[calc(100vh-5rem)] md:h-[calc(100vh-9rem)]
       `}
-      style={{ height: 'calc(100vh - 9rem)' }}
     >
       <div
         className={`
           bg-gray-800 bg-opacity-80 backdrop-blur-sm p-3 flex items-center justify-between
+          sticky top-0 z-10
         `}
       >
         <span className="text-white font-medium">{title}</span>
@@ -61,7 +63,7 @@ const WindowPane: React.FC<WindowPaneProps> = ({
         </div>
       </div>
       <div 
-        className="overflow-auto"
+        className="overflow-auto overscroll-contain"
         style={{ height: 'calc(100% - 3rem)' }}
       >
         <WindowContent type={type} />

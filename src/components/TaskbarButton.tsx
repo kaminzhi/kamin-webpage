@@ -3,19 +3,22 @@
 import React from 'react';
 import { TaskbarButtonProps } from '../../types';
 
-const TaskbarButton : React.FC<TaskbarButtonProps> = ({ title, isActive, onClick, isOpen }) => {
+const TaskbarButton: React.FC<TaskbarButtonProps> = ({ title, isActive, isOpen, onClick }) => {
   return (
     <button
       onClick={onClick}
       className={`
-        min-w-[100px] px-6 py-2 rounded-full transition-all duration-300 
-        flex items-center justify-center
-        transform hover:scale-105
-        ${isActive ? 'bg-white text-gray-800 shadow-lg scale-105' : 
-                    'bg-white bg-opacity-20 text-white hover:bg-opacity-30'}
+        relative px-3 md:px-4 py-1.5 rounded-full transition-all
+        text-sm md:text-base whitespace-nowrap
+        ${isActive 
+          ? 'bg-white text-black' 
+          : 'text-white hover:bg-white hover:bg-opacity-10'}
       `}
     >
-      <span className="font-medium">{title}</span>
+      {title}
+      {isOpen && !isActive && (
+        <div className="absolute bottom-0.5 left-1/2 -translate-x-1/2 w-1 h-1 bg-white rounded-full" />
+      )}
     </button>
   );
 };

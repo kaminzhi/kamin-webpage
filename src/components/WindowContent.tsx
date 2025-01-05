@@ -13,7 +13,7 @@ const WindowContent: React.FC<WindowContentProps> = ({ type }) => {
   switch (type) {
     case 'about':
       return (
-        <div className="p-6 animate-fadeIn">
+        <div className="p-4 md:p-6 animate-fadeIn">
           <div className="flex flex-col md:flex-row items-center justify-center md:space-x-6 mb-6">
             <img 
               src="https://avatars.githubusercontent.com/u/72861268?v=4" 
@@ -67,7 +67,7 @@ const WindowContent: React.FC<WindowContentProps> = ({ type }) => {
       );
     case 'projects':
       return (
-        <div className="p-4 md:p-6 space-y-4 md:space-y-6 animate-fadeIn">
+        <div className="p-6 space-y-6 animate-fadeIn">
           {[
             { 
               title: "Minecraft-Server-status", 
@@ -121,9 +121,9 @@ const WindowContent: React.FC<WindowContentProps> = ({ type }) => {
       );
     case 'contact':
       return (
-        <div className="p-4 md:p-6 animate-fadeIn">
-          <div className="text-center mb-6 md:mb-8">
-            <h2 className="text-2xl md:text-3xl text-black font-bold mb-4">怎麼找我</h2>
+        <div className="p-6 animate-fadeIn">
+          <div className="text-center mb-8">
+            <h2 className="text-3xl text-black font-bold mb-4">怎麼找我</h2>
             <p className="text-gray-600 max-w-md mx-auto">
               下面是可以找到我的管道還有一些連結
             </p>
