@@ -29,10 +29,12 @@ const Clock: React.FC<ClockProps> = ({ allWindowsClosed }) => {
     <>
       <div 
         className={`
-          text-white fixed left-1/2 -translate-x-1/2 top-3
+          text-white fixed left-1/2 -translate-x-1/2
           transition-opacity duration-500 ease-in-out
-          ${allWindowsClosed ? 'md:opacity-0' : 'opacity-100'}
-          text-lg
+          ${allWindowsClosed 
+            ? 'md:opacity-0 top-[calc(50vh+2rem)] text-8xl' 
+            : 'opacity-100 top-3 text-lg'
+          }
         `}
       >
         {formatTime(time)}
