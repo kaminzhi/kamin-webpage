@@ -1,0 +1,28 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  text-align: center;
+  background-color: #f0f0f0;
+}
+
+.title {
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: #333;
+}
+
+.description {
+  margin-top: 1rem;
+  font-size: 1.25rem;
+  color: #555;
+}
+
+.code {
+  background: #eaeaea;
+  border-radius: 5px;
+  padding: 0.2rem 0.4rem;
+  font-family: monospace;
+}
