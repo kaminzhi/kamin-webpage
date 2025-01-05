@@ -13,8 +13,10 @@ const nextConfig: NextConfig = {
       },
     ],
   },
-  // output: "dist",
-  // distDir: "dist",
+  output: 'export',
+  distDir: 'dist',
+  basePath: process.env.NODE_ENV === 'production' ? 'kaminzhi.github.io' : '',
+  assetPrefix: process.env.NODE_ENV === 'production' ? '/kaminzhi.github.io/' : '',
 };
 
 export default nextConfig;
