@@ -16,7 +16,7 @@ const Clock: React.FC<ClockProps> = ({ allWindowsClosed }) => {
   }, []);
 
   if (!time) {
-    return <div className="text-white text-lg">--:--</div>;
+    return <div className="text-white text-lg"></div>;
   }
 
   const formatTime = (date: Date) => {
@@ -29,12 +29,9 @@ const Clock: React.FC<ClockProps> = ({ allWindowsClosed }) => {
     <>
       <div 
         className={`
-          text-white fixed left-1/2 -translate-x-1/2
+          text-white fixed left-1/2 -translate-x-1/2 top-3 text-lg
           transition-opacity duration-500 ease-in-out
-          ${allWindowsClosed 
-            ? 'md:opacity-0 top-[calc(50vh+2rem)] text-8xl' 
-            : 'opacity-100 top-3 text-lg'
-          }
+          ${allWindowsClosed ? 'opacity-0' : 'opacity-100'}
         `}
       >
         {formatTime(time)}
@@ -42,13 +39,10 @@ const Clock: React.FC<ClockProps> = ({ allWindowsClosed }) => {
       
       <div 
         className={`
-          text-white fixed left-1/2
-          -translate-x-1/2
+          text-white fixed left-1/2 -translate-x-1/2
+          top-[calc(50vh+2rem)] text-8xl
           transition-opacity duration-500 ease-in-out
-          ${allWindowsClosed ? 'md:opacity-100 opacity-0' : 'opacity-0'}
-          text-8xl
-          top-[calc(50vh+2rem)]
-          hidden md:block
+          ${allWindowsClosed ? 'opacity-100' : 'opacity-0'}
         `}
       >
         {formatTime(time)}
