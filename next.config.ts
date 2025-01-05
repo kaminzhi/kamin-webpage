@@ -15,7 +15,7 @@ const nextConfig: NextConfig = {
   },
   output: 'export',
   distDir: 'dist',
-  basePath: process.env.NODE_ENV === 'production' ? 'kaminzhi.github.io' : '',
+  basePath: process.env.NODE_ENV === 'production' ? '/kaminzhi.github.io' : '',
   assetPrefix: process.env.NODE_ENV === 'production' ? '/kaminzhi.github.io/' : '',
 };
 
