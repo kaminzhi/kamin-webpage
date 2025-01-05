@@ -26,17 +26,32 @@ const Clock: React.FC<ClockProps> = ({ allWindowsClosed }) => {
   };
 
   return (
-    <div 
-      className={`
-        text-white fixed left-1/2 -translate-x-1/2
-        transition-all duration-500 ease-in-out
-        ${allWindowsClosed 
-          ? 'top-[calc(50vh+2rem)] -translate-y-1/2 text-8xl scale-100 opacity-100' 
-          : 'top-3 text-lg scale-100 opacity-100'}
-      `}
-    >
-      {formatTime(time)}
-    </div>
+    <>
+      <div 
+        className={`
+          text-white fixed left-1/2 -translate-x-1/2 top-3
+          transition-opacity duration-500 ease-in-out
+          ${allWindowsClosed ? 'md:opacity-0' : 'opacity-100'}
+          text-lg
+        `}
+      >
+        {formatTime(time)}
+      </div>
+      
+      <div 
+        className={`
+          text-white fixed left-1/2
+          -translate-x-1/2
+          transition-opacity duration-500 ease-in-out
+          ${allWindowsClosed ? 'md:opacity-100 opacity-0' : 'opacity-0'}
+          text-8xl
+          top-[calc(50vh+2rem)]
+          hidden md:block
+        `}
+      >
+        {formatTime(time)}
+      </div>
+    </>
   );
 };
 
