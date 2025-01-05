@@ -180,7 +180,13 @@ const HomePage: React.FC = () => {
           ) : null
         )}
       </div>
-      <div className="fixed bottom-4 left-1/2 -translate-x-1/2 inline-flex px-4 py-2 bg-black bg-opacity-80 backdrop-blur-md rounded-full items-center gap-3 z-50">
+      <div className="fixed bottom-4 left-1/2 -translate-x-1/2 
+          inline-flex px-4 py-2 bg-black bg-opacity-80 backdrop-blur-md 
+          rounded-full items-center gap-3 z-50
+          // 移動端樣式
+          w-[90vw] md:w-auto overflow-x-auto
+          // 隱藏滾動條但保持功能
+          scrollbar-hide">
         {Object.entries(windows)
           .filter(([key]) => key !== 'blog')
           .map(([key, window]) => (

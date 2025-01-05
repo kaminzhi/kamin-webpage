@@ -21,12 +21,14 @@ const WindowPane: React.FC<WindowPaneProps> = ({
     <div
       className={`
         bg-white bg-opacity-40 backdrop-blur-md rounded-lg shadow-xl overflow-hidden
-        fixed top-16 left-1/2
+        fixed 
+        md:top-16 md:left-1/2
+        top-0 left-0 w-full h-full md:h-auto
         transition-all duration-500 ease-in-out
-        ${type === 'blog' ? 'w-[95vw]' : 'w-full max-w-4xl'}
+        ${type === 'blog' ? 'md:w-[95vw]' : 'md:w-full md:max-w-4xl'}
         ${isActive 
-          ? 'opacity-100 z-30 -translate-x-1/2 translate-y-0' 
-          : 'opacity-0 z-20 pointer-events-none -translate-x-1/2 translate-y-[60vh]'}
+          ? 'opacity-100 z-30 md:-translate-x-1/2 md:translate-y-0' 
+          : 'opacity-0 z-20 pointer-events-none md:-translate-x-1/2 md:translate-y-[60vh]'}
       `}
       style={{ height: 'calc(100vh - 9rem)' }}
     >
