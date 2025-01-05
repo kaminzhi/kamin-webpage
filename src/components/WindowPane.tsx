@@ -28,9 +28,9 @@ const WindowPane: React.FC<WindowPaneProps> = ({
         ${isActive 
           ? 'opacity-100 z-30 md:-translate-x-1/2 translate-y-0' 
           : 'opacity-0 z-20 pointer-events-none md:-translate-x-1/2 translate-y-[60vh]'}
-        mb-20 md:mb-24
-        max-h-[calc(100vh-8rem)] md:max-h-[calc(100vh-9rem)]
-        h-[calc(100vh-8rem)] md:h-[calc(100vh-9rem)]
+        mb-16 md:mb-24
+        max-h-[calc(100vh-8rem-4rem)] md:max-h-[calc(100vh-9rem)]
+        h-[calc(100vh-8rem-4rem)] md:h-[calc(100vh-9rem)]
       `}
     >
       <div

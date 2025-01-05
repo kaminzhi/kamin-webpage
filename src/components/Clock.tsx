@@ -40,7 +40,7 @@ const Clock: React.FC<ClockProps> = ({ allWindowsClosed }) => {
       <div 
         className={`
           text-white fixed left-1/2 -translate-x-1/2
-          top-[calc(50vh+2rem)] text-8xl
+          top-[calc(42vh+2rem)] text-8xl
           transition-opacity duration-500 ease-in-out
           ${allWindowsClosed ? 'opacity-100' : 'opacity-0'}
         `}
