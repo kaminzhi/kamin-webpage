@@ -25,7 +25,7 @@ const WindowContent: React.FC<WindowContentProps> = ({ type }) => {
           <p className="text-black mb-2 text-center text-xl">
             我是那種什麼都會一點，什麼都不精的人
           </p>
-          <p className="text-black mb-7 text-center text-xl">
+          <p className="text-black mb-7 text-center text-xl italic">
             部落格在左上角
           </p>
           <div className="space-y-6">

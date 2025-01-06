@@ -4,6 +4,7 @@ import React from 'react';
 import { X, Minus, Square, ExternalLink } from 'lucide-react';
 import { WindowPaneProps } from '../../types';
 import WindowContent from './WindowContent';
+import { iframeConfig } from '../config/iframe';
 
 const WindowPane: React.FC<WindowPaneProps> = ({
   title,
@@ -42,7 +43,7 @@ const WindowPane: React.FC<WindowPaneProps> = ({
         <div className="flex space-x-2">
           {type === 'blog' && (
             <a
-              href="https://blog.kaminzhi.com"
+              href={iframeConfig.blog.url}
               target="_blank"
               rel="noopener noreferrer"
               className="p-1 hover:bg-gray-700 rounded-full transition-all duration-200 hover:scale-110 flex items-center"
@@ -56,7 +57,7 @@ const WindowPane: React.FC<WindowPaneProps> = ({
         </div>
       </div>
       <div 
-        className="overflow-auto overscroll-contain h-[calc(100%-3rem)]"
+        className="overflow-auto overscroll-contain h-[calc(100%-3rem)] window-content"
       >
         <WindowContent type={type} />
       </div>
