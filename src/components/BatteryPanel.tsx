@@ -92,8 +92,8 @@ const BatteryPanel: React.FC<BatteryPanelProps> = ({ isOpen }) => {
               <div>
                 <div className="text-white font-medium">系統運行時間</div>
                 <div className="text-gray-400 text-sm flex flex-col gap-1">
-                  <div>部署於 {formattedDeploymentDate}</div>
-                  <div>已運行 {days}天 {hours}小時 {minutes}分鐘</div>
+                  <div>更新部署於 {formattedDeploymentDate}</div>
+                  <div>繼上次更新已運行 {days}天 {hours}小時 {minutes}分鐘</div>
                 </div>
               </div>
             </div>
