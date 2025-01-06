@@ -62,7 +62,7 @@ const HomePage: React.FC = () => {
   useEffect(() => {
     const timer = setTimeout(() => {
       setShowBlogHint(true);
-    }, 3000);  // 3秒後顯示
+    }, 4000);  // 3秒後顯示
 
     return () => clearTimeout(timer);
   }, []);

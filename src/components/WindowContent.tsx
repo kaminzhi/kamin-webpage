@@ -86,12 +86,22 @@ const WindowContent: React.FC<WindowContentProps> = ({ type }) => {
             部落格在左上角
           </p>
           <div className="space-y-6">
-            <div className="bg-gray-50 bg-opacity-50 backdrop-blur-sm p-6 rounded-lg hover:shadow-lg transition-shadow">
+            <div className="bg-gray-50 bg-opacity-50 backdrop-blur-sm p-6 rounded-lg 
+              hover:shadow-lg transition-all duration-300 ease-in-out
+              hover:-translate-y-1 hover:bg-opacity-70
+              cursor-pointer
+            ">
               <h3 className="font-semibold mb-4 text-lg text-black">掌握的技能✌️</h3>
               <div className="flex flex-wrap gap-3">
-                {['React',  'Python', "C++", "C", "JavaScript", "HTML", "CSS", "Git","Linux 部屬","Arduino","硬體拆裝 (這算技能吧?)","Neovim"].map(skill => (
+                {['React', 'Python', "C++", "C", "JavaScript", "HTML", "CSS", "Git","Linux 部屬","Arduino","硬體拆裝 (這算技能吧?)","Neovim"].map(skill => (
                   <span key={skill} 
-                    className="px-4 py-2 bg-blue-100 text-blue-800 rounded-full text-sm hover:bg-blue-200 transition-colors cursor-pointer">
+                    className="px-4 py-2 bg-blue-100 text-blue-800 rounded-full text-sm 
+                      hover:bg-blue-200 
+                      transition-all duration-300 ease-in-out
+                      hover:-translate-y-1 hover:scale-110
+                      hover:shadow-md
+                      cursor-pointer"
+                  >
                     {skill}
                   </span>
                 ))}
@@ -101,24 +111,55 @@ const WindowContent: React.FC<WindowContentProps> = ({ type }) => {
               <div className="flex flex-wrap gap-3">
                 {['Rust',  'GoLang', "TypeScript", " Verilog", "VB.NET", "Docker" ].map(skill => (
                   <span key={skill} 
-                    className="px-4 py-2 bg-blue-100 text-blue-800 rounded-full text-sm hover:bg-blue-200 transition-colors cursor-pointer">
+                    className="px-4 py-2 bg-blue-100 text-blue-800 rounded-full text-sm 
+                      hover:bg-blue-200 
+                      transition-all duration-300 ease-in-out
+                      hover:-translate-y-1 hover:scale-110
+                      hover:shadow-md
+                      cursor-pointer">
                     {skill}
                   </span>
                 ))}
               </div>
             </div>
-            <div className="bg-gray-50 bg-opacity-50 backdrop-blur-sm p-6 rounded-lg hover:shadow-lg transition-shadow">
+            <div className="bg-gray-50 bg-opacity-50 backdrop-blur-sm p-6 rounded-lg 
+              hover:shadow-lg transition-all duration-300 ease-in-out
+              hover:-translate-y-1 hover:bg-opacity-70
+              cursor-pointer
+            ">
               <h3 className="font-semibold mb-4 text-lg text-black">經歷</h3>
               <div className="space-y-4">
-                <div className="border-l-2 border-blue-500 pl-4">
-                  <h4 className="font-medium text-lg text-black">比賽 ( Damn 我好爛 )</h4>
-                  <p className="text-gray-600">2022 - 工科賽電腦修護 優勝</p>
-                  <p className="text-gray-600">2023 - 全國專題競賽 佳作</p>
+                <div className="border-l-2 border-blue-500 pl-4 
+                  transition-all duration-300 ease-in-out
+                  hover:border-l-4 hover:pl-6 hover:translate-x-2
+                  hover:bg-white hover:bg-opacity-30 hover:rounded-r-lg
+                  cursor-pointer group
+                ">
+                  <h4 className="font-medium text-lg text-black transition-colors group-hover:text-blue-600">
+                    比賽 ( Damn 我好爛 )
+                  </h4>
+                  <p className="text-gray-600 transition-colors group-hover:text-gray-800">
+                    2022 - 工科賽電腦修護 優勝
+                  </p>
+                  <p className="text-gray-600 transition-colors group-hover:text-gray-800">
+                    2023 - 全國專題競賽 佳作
+                  </p>
                 </div>
-                <div className="border-l-2 border-blue-500 pl-4">
-                  <h4 className="font-medium text-lg text-black">學校</h4>
-                  <p className="text-gray-600">2020 ~ 2023 國立新化高級工業職業學校</p>
-                  <p className="text-gray-600">2023 ~ (就學中...) 國立雲林科技大學</p>
+                <div className="border-l-2 border-blue-500 pl-4 
+                  transition-all duration-300 ease-in-out
+                  hover:border-l-4 hover:pl-6 hover:translate-x-2
+                  hover:bg-white hover:bg-opacity-30 hover:rounded-r-lg
+                  cursor-pointer group
+                ">
+                  <h4 className="font-medium text-lg text-black transition-colors group-hover:text-blue-600">
+                    學校
+                  </h4>
+                  <p className="text-gray-600 transition-colors group-hover:text-gray-800">
+                    2020 ~ 2023 國立新化高級工業職業學校
+                  </p>
+                  <p className="text-gray-600 transition-colors group-hover:text-gray-800">
+                    2023 ~ (就學中...) 國立雲林科技大學
+                  </p>
                 </div>
               </div>
             </div>

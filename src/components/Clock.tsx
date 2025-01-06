@@ -16,27 +16,46 @@ const ClockDisplay = memo(({ time, position, allWindowsClosed }: ClockDisplayPro
   const [showText, setShowText] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const [initialLoad, setInitialLoad] = useState(true);
+  const [showClock, setShowClock] = useState(false);
 
   useEffect(() => {
     setMounted(true);
-    setIsVisible(true);
+    const clockTimer = setTimeout(() => {
+      setInitialLoad(false);
+      setShowClock(true);
+    }, 2000);
+
+    const textTimer = setTimeout(() => {
+      setIsVisible(true);
+      if (allWindowsClosed) {
+        setShowText(true);
+      }
+    }, 4000);
+    
+    return () => {
+      clearTimeout(clockTimer);
+      clearTimeout(textTimer);
+    };
   }, []);
 
   useEffect(() => {
-    if (allWindowsClosed) {
-      setIsVisible(true);
-      const timer = setTimeout(() => {
-        setShowText(true);
-      }, 700);
-      return () => clearTimeout(timer);
-    } else {
-      setShowText(false);
-      const timer = setTimeout(() => {
-        setIsVisible(false);
-      }, 700);
-      return () => clearTimeout(timer);
+    if (!initialLoad) {
+      if (allWindowsClosed) {
+        setIsVisible(true);
+        const timer = setTimeout(() => {
+          setShowText(true);
+        }, 700);
+        return () => clearTimeout(timer);
+      } else {
+        setShowText(false);
+        const timer = setTimeout(() => {
+          setIsVisible(false);
+        }, 700);
+        return () => clearTimeout(timer);
+      }
     }
-  }, [allWindowsClosed]);
+  }, [allWindowsClosed, initialLoad]);
 
   if (!mounted) return null;
 
@@ -45,11 +64,12 @@ const ClockDisplay = memo(({ time, position, allWindowsClosed }: ClockDisplayPro
       <div 
         className={`
           text-white fixed left-1/2 -translate-x-1/2 top-3 text-lg
-          transition-all duration-700 ease-in-out
+          transition-all duration-1000 ease-out
           transform-gpu will-change-transform
-          ${allWindowsClosed 
-            ? 'opacity-0 translate-y-[-20px] scale-95'
-            : 'opacity-100 translate-y-0 scale-100'
+          ${initialLoad ? 'opacity-0 translate-y-[-50px]' : 
+            allWindowsClosed 
+              ? 'opacity-0 translate-y-[-10px] scale-95'
+              : 'opacity-100 translate-y-0 scale-100'
           }
         `}
       >
@@ -68,33 +88,37 @@ const ClockDisplay = memo(({ time, position, allWindowsClosed }: ClockDisplayPro
         }
         flex flex-col items-center gap
         whitespace-nowrap
-        transition-all duration-700 ease-in-out
+        transition-all duration-1000 ease-out
         transform-gpu will-change-transform
-        ${allWindowsClosed 
-          ? 'opacity-100 translate-y-0 scale-100'
-          : 'opacity-0 translate-y-20 scale-95'
+        ${initialLoad ? 'opacity-0 translate-y-[50px]' :
+          allWindowsClosed 
+            ? 'opacity-100 translate-y-0 scale-100'
+            : 'opacity-0 translate-y-10 scale-95'
         }
         max-w-[95vw]
       `}
       style={{ 
         position: 'fixed',
         transform: `translate(-50%, ${position === 'center' ? '-50%' : '0'}) ${
-          allWindowsClosed ? 'translateY(0)' : 'translateY(20px)'
+          initialLoad ? 'translateY(50px)' :
+          allWindowsClosed ? 'translateY(0)' : 'translateY(10px)'
         }`
       }}
     >
       <div 
         className={`
           text-white
-          transition-all duration-700 ease-in-out
+          transition-all duration-1000 ease-out
           font-['Carter_One']
-          ${allWindowsClosed 
-            ? (showText ? 'opacity-100 scale-100 translate-y-0' : 'opacity-0 scale-95 translate-y-10')
-            : 'opacity-0 scale-95 -translate-y-10'
+          mb-1
+          ${!showClock ? 'opacity-0 scale-90 translate-y-[50px]' :
+            allWindowsClosed 
+              ? (showText ? 'opacity-100 scale-100 translate-y-0' : 'opacity-0 scale-95 translate-y-[10px]')
+              : 'opacity-0 scale-95 translate-y-[-10px]'
           }
         `}
         style={{
-          fontSize: 'clamp(2rem, 3vw, 4rem)'
+          fontSize: 'clamp(1.5rem, 3vw, 4rem)'
         }}
       >
         Life Sucks, But I'm Still Here
@@ -102,12 +126,14 @@ const ClockDisplay = memo(({ time, position, allWindowsClosed }: ClockDisplayPro
       <div 
         className={`
           text-white
-          transition-all duration-700 ease-in-out
+          transition-all duration-1000 ease-out
           transform
           font-['Salsa']
-          ${allWindowsClosed 
-            ? 'opacity-100 translate-y-0 scale-100'
-            : 'opacity-0 -translate-y-20 scale-90'
+          -mt-4
+          ${!showClock ? 'opacity-0 translate-y-[50px] scale-90' :
+            allWindowsClosed 
+              ? 'opacity-100 translate-y-0 scale-100'
+              : 'opacity-0 translate-y-[-20px] scale-95'
           }
         `}
         style={{
