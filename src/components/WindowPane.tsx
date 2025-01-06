@@ -50,12 +50,6 @@ const WindowPane: React.FC<WindowPaneProps> = ({
               <ExternalLink size={16} className="text-white" />
             </a>
           )}
-          <button onClick={onMinimize} className="p-1 hover:bg-gray-700 rounded-full transition-all duration-200 hover:scale-110">
-            <Minus size={16} className="text-white" />
-          </button>
-          <button onClick={onMaximize} className="p-1 hover:bg-gray-700 rounded-full transition-all duration-200 hover:scale-110">
-            <Square size={16} className="text-white" />
-          </button>
           <button onClick={onClose} className="p-1 hover:bg-gray-700 rounded-full transition-all duration-200 hover:scale-110">
             <X size={20} className="text-white" />
           </button>
