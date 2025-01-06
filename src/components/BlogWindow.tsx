@@ -23,7 +23,9 @@ const BlogWindow: React.FC<BlogWindowProps> = ({ isOpen, onClose }) => {
         onClick={e => e.stopPropagation()}
         className={`
           absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2
-          w-[90vw] h-[80vh] bg-white bg-opacity-90 backdrop-blur-md rounded-lg shadow-2xl
+          w-[94vw] md:w-[90vw] lg:w-[86vw] xl:w-[82vw] 2xl:w-[78vw]
+          h-[85vh] md:h-[82vh] lg:h-[80vh]
+          bg-white rounded-lg shadow-2xl
           transition-all duration-300 transform
           ${isOpen ? 'scale-100' : 'scale-95'}
         `}
@@ -41,7 +43,18 @@ const BlogWindow: React.FC<BlogWindowProps> = ({ isOpen, onClose }) => {
           src={iframeConfig.blog.url}
           title={iframeConfig.blog.title}
           className="w-full h-full rounded-lg"
-          style={{ border: 'none' }}
+          style={{ 
+            border: 'none',
+            width: '100%',
+            height: '100%',
+            margin: '0',
+            padding: '0',
+            overflow: 'hidden'
+          }}
+          loading="eager"
+          sandbox="allow-same-origin allow-scripts allow-popups allow-forms"
+          referrerPolicy="no-referrer"
+          scrolling="auto"
         />
       </div>
     </div>
