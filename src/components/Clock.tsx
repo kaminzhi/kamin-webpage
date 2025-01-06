@@ -37,15 +37,22 @@ const Clock: React.FC<ClockProps> = ({ allWindowsClosed }) => {
         {formatTime(time)}
       </div>
       
-      <div 
+      <div
         className={`
-          text-white fixed left-1/2 -translate-x-1/2
-          top-[calc(42vh+2rem)] text-8xl
+          fixed left-1/2 -translate-x-1/2
+          top-[35vh] md:top-[calc(42vh+2rem)]
+          flex flex-col items-center gap-4
           transition-opacity duration-500 ease-in-out
           ${allWindowsClosed ? 'opacity-100' : 'opacity-0'}
+          whitespace-nowrap
         `}
       >
-        {formatTime(time)}
+        <div className="text-white text-2xl md:text-3xl lg:text-4xl">
+          Life Sucks, But I'm Still Here
+        </div>
+        <div className="text-white text-7xl md:text-8xl lg:text-9xl">
+          {formatTime(time)}
+        </div>
       </div>
     </>
   );
