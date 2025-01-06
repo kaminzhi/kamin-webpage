@@ -192,10 +192,14 @@ const HomePage: React.FC = () => {
         isBlogOpen={windows.blog.isOpen}
       />
       {showBlogHint && (
-        <div className={`absolute top-14 flex flex-col items-center text-white z-50
+        <div className={`
+          absolute top-14 
+          flex flex-col items-center text-white 
+          z-20
           ${isHintVisible ? 'animate-hint-fade-in opacity-100' : 'animate-hint-fade-out opacity-0'} 
           transition-all duration-500
-          ${isMobile ? 'left-[-0.3rem]' : 'left-2'}`}
+          ${isMobile ? 'left-[-0.3rem]' : 'left-2'}
+        `}
           onAnimationEnd={(e) => {
             if (e.animationName.includes('hint-fade-in')) {
               setHintAnimationDone(true);
