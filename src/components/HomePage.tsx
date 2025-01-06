@@ -160,7 +160,12 @@ const HomePage: React.FC = () => {
   return (
     <div className="min-h-screen relative overflow-hidden">
       <Background />
-      <StatusBar allWindowsClosed={allWindowsClosed} onBlogClick={() => handleWindowClick('blog')} />
+      <StatusBar 
+        allWindowsClosed={allWindowsClosed} 
+        onBlogClick={() => handleWindowClick('blog')} 
+        currentWindow={Object.entries(windows).find(([_, win]) => win.isActive)?.[0]}
+        isBlogOpen={windows.blog.isOpen}
+      />
       <div className={`h-[calc(100vh-6rem)] mt-14 ${isLoaded ? 'opacity-100' : 'opacity-0'}`}>
         {Object.entries(windows).map(([key, window]) =>
           window.isOpen ? (

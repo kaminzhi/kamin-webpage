@@ -7,10 +7,13 @@ import WifiPanel from './WifiPanel';
 import VolumePanel from './VolumePanel';
 import BatteryPanel from './BatteryPanel';
 import { backgroundMusic } from '@/config/music';
+import TaskbarButton from './TaskbarButton';
 
 interface StatusBarProps {
   allWindowsClosed: boolean;
   onBlogClick: () => void;
+  currentWindow?: string;
+  isBlogOpen?: boolean;
 }
 
 const StatusBarBatteryIcon = () => (
@@ -41,7 +44,12 @@ const StatusBarBatteryIcon = () => (
   </div>
 );
 
-const StatusBar: React.FC<StatusBarProps> = ({ allWindowsClosed, onBlogClick }) => {
+const StatusBar: React.FC<StatusBarProps> = ({ 
+  allWindowsClosed, 
+  onBlogClick, 
+  currentWindow,
+  isBlogOpen = false
+}) => {
   const [isWifiPanelOpen, setIsWifiPanelOpen] = useState(false);
   const [isVolumePanelOpen, setIsVolumePanelOpen] = useState(false);
   const [isBatteryPanelOpen, setIsBatteryPanelOpen] = useState(false);
@@ -198,15 +206,12 @@ const StatusBar: React.FC<StatusBarProps> = ({ allWindowsClosed, onBlogClick }) 
   return (
     <div className="fixed top-0 left-0 right-0 h-12 bg-black bg-opacity-80 backdrop-blur-md z-40 flex items-center px-4">
       <div className="flex-1 flex items-center space-x-4">
-        <button 
+        <TaskbarButton
+          title="My Blog"
+          isActive={currentWindow === 'blog'}
+          isOpen={isBlogOpen}
           onClick={onBlogClick}
-          className="inline-flex px-4 py-1 rounded-full bg-white bg-opacity-20 backdrop-blur-sm
-                   text-white text-base font-medium 
-                   hover:bg-opacity-30 transition-all duration-300
-                   hover:scale-105 transform"
-        >
-          My Blog
-        </button>
+        />
       </div>
       <div className="flex-1 flex justify-center pointer-events-none">
         <Clock allWindowsClosed={allWindowsClosed} />

@@ -16,9 +16,6 @@ const TaskbarButton: React.FC<TaskbarButtonProps> = ({ title, isActive, isOpen, 
       `}
     >
       {title}
-      {isOpen && !isActive && (
-        <div className="absolute bottom-0.5 left-1/2 -translate-x-1/2 w-1 h-1 bg-white rounded-full" />
-      )}
     </button>
   );
 };
