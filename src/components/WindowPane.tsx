@@ -28,11 +28,8 @@ const WindowPane: React.FC<WindowPaneProps> = ({
         ${isActive 
           ? 'opacity-100 z-30 md:-translate-x-1/2 translate-y-0' 
           : 'opacity-0 z-20 pointer-events-none md:-translate-x-1/2 translate-y-[60vh]'}
-  -       mb-16 md:mb-24
-  -       min-h-[calc(100vh-8rem-4rem)] md:min-h-[calc(100vh-9rem)]
-  -       max-h-[calc(100vh-4rem)] md:max-h-[calc(100vh-6rem)]
-  +       mb-[4rem] md:mb-24
-  +       h-[calc(100vh-8rem)] md:h-[calc(100vh-9rem)]
+         mb-[4rem] md:mb-24
+         h-[calc(100vh-8rem)] md:h-[calc(100vh-9rem)]
       `}
     >
       <div

@@ -22,8 +22,11 @@ const WindowContent: React.FC<WindowContentProps> = ({ type }) => {
             />
             <h2 className="text-xl md:text-2xl font-bold text-black">kamin_zhi (神奇海螺)</h2>
           </div>
+          <p className="text-black mb-2 text-center text-xl">
+            我是那種什麼都會一點，什麼都不精的人
+          </p>
           <p className="text-black mb-7 text-center text-xl">
-            我是那種什麼都會一點，什麼都不精的人。
+            部落格在左上角
           </p>
           <div className="space-y-6">
             <div className="bg-gray-50 bg-opacity-50 backdrop-blur-sm p-6 rounded-lg hover:shadow-lg transition-shadow">
@@ -75,6 +78,13 @@ const WindowContent: React.FC<WindowContentProps> = ({ type }) => {
               tech: ["Rust"],
               link: "https://github.com/kaminzhi/minecraft-server-status",
               image: "https://www.esports.net/wp-content/uploads/2024/11/minecraft-server-status.webp"
+            },
+            { 
+              title: "kaminzhi.github.io", 
+              desc: "My Website", 
+              tech: ["Next.js", "TypeScript"],
+              link: "https://github.com/kaminzhi/kaminzhi.github.io",
+              image: "https://images.ctfassets.net/23aumh6u8s0i/6pjUKboBuFLvCKkE3esaFA/5f2101d6d2add5c615db5e98a553fc44/nextjs.jpeg"
             },
             { 
               title: "Dotfile", 
