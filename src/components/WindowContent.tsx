@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Mail, Github, Linkedin, Instagram, Twitter, Facebook, Music } from 'lucide-react';
 import { FaDiscord, FaTelegram } from 'react-icons/fa';
 import { iframeConfig } from '@/config/iframe';
@@ -10,15 +10,51 @@ interface WindowContentProps {
 }
 
 const WindowContent: React.FC<WindowContentProps> = ({ type }) => {
+  const [isPlaying, setIsPlaying] = useState(false);
+
+  useEffect(() => {
+    const audio = document.querySelector('audio');
+    if (!audio) return;
+
+    const handlePlay = () => setIsPlaying(true);
+    const handlePause = () => setIsPlaying(false);
+    const handleEnded = () => setIsPlaying(false);
+
+    audio.addEventListener('play', handlePlay);
+    audio.addEventListener('pause', handlePause);
+    audio.addEventListener('ended', handleEnded);
+
+    setIsPlaying(!audio.paused);
+
+    return () => {
+      audio.removeEventListener('play', handlePlay);
+      audio.removeEventListener('pause', handlePause);
+      audio.removeEventListener('ended', handleEnded);
+    };
+  }, []);
+
   switch (type) {
     case 'about':
       return (
         <div className="p-4 md:p-6 animate-fadeIn">
           <div className="flex flex-col md:flex-row items-center justify-center md:space-x-6 mb-6">
-            <div className="flex items-center relative">
+            <div className="flex items-center relative mb-6 md:mb-0">
               <div className="relative w-32 h-32 md:w-64 md:h-64">
-                <div className="absolute inset-0 rounded-full bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 animate-spin-slow" />
-                <div className="absolute inset-[6px] md:inset-[8px] bg-white rounded-full">
+                <div className="absolute inset-[-4px] md:inset-[-8px] rounded-full bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 animate-spin-slow" />
+                <div className="absolute inset-[-2px] md:inset-[-4px] rounded-full bg-gradient-to-r from-gray-900 to-gray-800 animate-spin-slow">
+                  <div className="absolute inset-0 rounded-full opacity-20">
+                    {[...Array(8)].map((_, i) => (
+                      <div
+                        key={i}
+                        className="absolute inset-0 rounded-full border border-gray-400"
+                        style={{
+                          transform: `scale(${(i + 1) * 0.1 + 0.2})`,
+                        }}
+                      />
+                    ))}
+                  </div>
+                </div>
+                <div className="absolute inset-[8px] md:inset-[16px] bg-white rounded-full">
                   <img 
                     src="https://avatars.githubusercontent.com/u/72861268?v=4" 
                     alt="kamin_zhi avatar" 
@@ -27,10 +63,17 @@ const WindowContent: React.FC<WindowContentProps> = ({ type }) => {
                 </div>
               </div>
               <div className="absolute top-2 right-3 md:top-8 md:right-10">
-                <div className="relative">
-                  <Music className="w-8 h-8 md:w-10 md:h-10 text-blue-500 animate-pulse [animation-duration:2s]" />
-                  <Music className="w-6 h-6 md:w-8 md:h-8 text-purple-500 animate-pulse [animation-duration:1.5s] absolute -top-3 -right-3" />
-                  <Music className="w-6 h-6 md:w-7 md:h-7 text-pink-500 animate-pulse [animation-duration:1s] absolute -top-3 -left-3" />
+                <div className={`relative transition-opacity duration-500 ${isPlaying ? 'opacity-100' : 'opacity-0'}`}>
+                  <Music className="w-8 h-8 md:w-10 md:h-10 text-blue-500 animate-bounce-slow [animation-duration:2s]" />
+                  <Music className="w-6 h-6 md:w-8 md:h-8 text-purple-500 animate-bounce-slow [animation-duration:1.5s] absolute -top-3 -right-3" />
+                  <Music className="w-6 h-6 md:w-7 md:h-7 text-pink-500 animate-bounce-slow [animation-duration:1s] absolute -top-3 -left-3" />
+                </div>
+              </div>
+              <div className={`absolute bottom-0 right-0 md:bottom-4 md:right-4 origin-bottom-right transform 
+                ${isPlaying ? 'rotate-[-20deg] animate-needle-down' : 'rotate-[-100deg] animate-needle-up'} 
+                transition-all duration-700 ease-in-out`}>
+                <div className="w-2 h-16 md:h-24 bg-gradient-to-b from-pink-500 to-purple-600 rounded-t-full shadow-lg">
+                  <div className="absolute -left-2 top-0 w-6 h-6 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full shadow-md" />
                 </div>
               </div>
             </div>

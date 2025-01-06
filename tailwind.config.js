@@ -27,6 +27,22 @@ module.exports = {
         reset: {
           '0%': { transform: 'translateX(var(--tw-translate-x, 0))' },
           '100%': { transform: 'translateX(0)' }
+        },
+        'needle-down': {
+          '0%': { transform: 'rotate(-100deg)' },
+          '30%': { transform: 'rotate(-15deg)' },
+          '60%': { transform: 'rotate(-23deg)' },
+          '100%': { transform: 'rotate(-20deg)' }
+        },
+        'needle-up': {
+          '0%': { transform: 'rotate(-20deg)' },
+          '30%': { transform: 'rotate(-110deg)' },
+          '60%': { transform: 'rotate(-95deg)' },
+          '100%': { transform: 'rotate(-100deg)' }
+        },
+        'bounce-slow': {
+          '0%, 100%': { transform: 'translateY(0)' },
+          '50%': { transform: 'translateY(-25%)' }
         }
       },
       animation: {
@@ -36,6 +52,7 @@ module.exports = {
         marquee: 'marquee 15s linear infinite',
         reset: 'reset 0.3s ease-out forwards',
         'spin-slow': 'spin 8s linear infinite',
+        'bounce-slow': 'bounce-slow 2s ease-in-out infinite',
       }
     }
   },
