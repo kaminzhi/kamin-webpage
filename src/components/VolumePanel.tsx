@@ -86,6 +86,35 @@ const VolumePanel: React.FC<VolumePanelProps> = ({
     updateValue(e.clientX);
   };
 
+  const handleTouchDrag = (
+    e: React.TouchEvent,
+    callback: (value: number) => void,
+    maxValue: number
+  ) => {
+    e.preventDefault();
+    const slider = e.currentTarget as HTMLDivElement;
+    const rect = slider.getBoundingClientRect();
+    
+    const updateValue = (clientX: number) => {
+      const x = Math.max(0, Math.min(clientX - rect.left, rect.width));
+      const percentage = x / rect.width;
+      callback(percentage * maxValue);
+    };
+
+    const handleTouchMove = (e: TouchEvent) => {
+      updateValue(e.touches[0].clientX);
+    };
+
+    const handleTouchEnd = () => {
+      document.removeEventListener('touchmove', handleTouchMove);
+      document.removeEventListener('touchend', handleTouchEnd);
+    };
+
+    document.addEventListener('touchmove', handleTouchMove, { passive: false });
+    document.addEventListener('touchend', handleTouchEnd);
+    updateValue(e.touches[0].clientX);
+  };
+
   return (
     <div 
       className={`absolute top-full mt-2 w-[95vw] md:w-[420px] right-0 -translate-x-2 md:-translate-x-2
@@ -157,7 +186,8 @@ const VolumePanel: React.FC<VolumePanelProps> = ({
 
         <div className="space-y-2">
           <div 
-            className="relative w-full h-1.5 bg-white bg-opacity-20 rounded-full cursor-pointer group"
+            className="relative w-full h-1.5 bg-white bg-opacity-20 rounded-full cursor-pointer group
+              touch-pan-x py-2"
             onClick={(e) => {
               const rect = e.currentTarget.getBoundingClientRect();
               const x = e.clientX - rect.left;
@@ -165,13 +195,17 @@ const VolumePanel: React.FC<VolumePanelProps> = ({
               onTimeChange(percentage * duration);
             }}
             onMouseDown={(e) => handleSliderDrag(e, onTimeChange, duration)}
+            onTouchStart={(e) => handleTouchDrag(e, onTimeChange, duration)}
           >
             <div
               className="absolute top-0 left-0 h-full bg-white rounded-full group-hover:bg-blue-400 transition-colors"
               style={{ width: `${(currentTime / duration) * 100}%` }}
             />
             <div 
-              className="absolute top-1/2 -translate-y-1/2 w-4 h-4 bg-white rounded-full shadow-lg opacity-0 group-hover:opacity-100 transition-opacity"
+              className="absolute top-1/2 -translate-y-1/2 w-4 h-4 bg-white rounded-full shadow-lg 
+                opacity-0 group-hover:opacity-100 transition-opacity
+                touch-none
+                [@media(hover:none)]:opacity-100"
               style={{ left: `${(currentTime / duration) * 100}%`, transform: 'translate(-50%, -50%)' }}
             />
           </div>
@@ -193,7 +227,8 @@ const VolumePanel: React.FC<VolumePanelProps> = ({
             )}
           </button>
           <div 
-            className="relative flex-1 h-1.5 bg-white bg-opacity-20 rounded-full cursor-pointer group"
+            className="relative flex-1 h-1.5 bg-white bg-opacity-20 rounded-full cursor-pointer group
+              touch-pan-x py-2"
             onClick={(e) => {
               const rect = e.currentTarget.getBoundingClientRect();
               const x = e.clientX - rect.left;
@@ -201,13 +236,17 @@ const VolumePanel: React.FC<VolumePanelProps> = ({
               onVolumeChange(Math.round(percentage * 100));
             }}
             onMouseDown={(e) => handleSliderDrag(e, (value) => onVolumeChange(Math.round(value)), 100)}
+            onTouchStart={(e) => handleTouchDrag(e, (value) => onVolumeChange(Math.round(value)), 100)}
           >
             <div
               className="absolute top-0 left-0 h-full bg-white rounded-full group-hover:bg-blue-400 transition-colors"
               style={{ width: `${isMuted ? 0 : volume}%` }}
             />
             <div 
-              className="absolute top-1/2 -translate-y-1/2 w-4 h-4 bg-white rounded-full shadow-lg opacity-0 group-hover:opacity-100 transition-opacity"
+              className="absolute top-1/2 -translate-y-1/2 w-4 h-4 bg-white rounded-full shadow-lg 
+                opacity-0 group-hover:opacity-100 transition-opacity
+                touch-none
+                [@media(hover:none)]:opacity-100"
               style={{ left: `${isMuted ? 0 : volume}%`, transform: 'translate(-50%, -50%)' }}
             />
           </div>
