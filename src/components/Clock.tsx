@@ -13,6 +13,25 @@ interface ClockDisplayProps {
 }
 
 const ClockDisplay = memo(({ time, position, allWindowsClosed }: ClockDisplayProps) => {
+  const [showText, setShowText] = useState(false);
+  const [isVisible, setIsVisible] = useState(false);
+
+  useEffect(() => {
+    if (allWindowsClosed) {
+      setIsVisible(true);
+      const timer = setTimeout(() => {
+        setShowText(true);
+      }, 500);
+      return () => clearTimeout(timer);
+    } else {
+      setShowText(false);
+      const timer = setTimeout(() => {
+        setIsVisible(false);
+      }, 500);
+      return () => clearTimeout(timer);
+    }
+  }, [allWindowsClosed]);
+
   if (position === 'top') {
     return (
       <div 
@@ -27,24 +46,37 @@ const ClockDisplay = memo(({ time, position, allWindowsClosed }: ClockDisplayPro
     );
   }
 
+  if (!isVisible && !allWindowsClosed) return null;
+
   return (
     <div
       className={`
         fixed left-1/2 -translate-x-1/2
-        top-[35vh] md:top-[calc(42vh+2rem)]
-        flex flex-col items-center gap-4
-        transition-all duration-500 ease-in-out
+        top-1/2 -translate-y-1/2 md:top-[calc(42vh+2rem)]
+        flex flex-col items-center gap-8
         whitespace-nowrap
-        ${allWindowsClosed 
-          ? 'opacity-100 animate-clockFadeIn' 
-          : 'opacity-0 animate-clockFadeOut'
-        }
       `}
     >
-      <div className="text-white text-2xl md:text-3xl lg:text-4xl">
+      <div 
+        className={`
+          text-white text-2xl md:text-3xl lg:text-4xl
+          ${allWindowsClosed 
+            ? (showText ? 'animate-[clock-fade-in_0.5s_ease-out_forwards]' : 'opacity-0')
+            : 'animate-[clock-fade-out_0.5s_ease-out_forwards]'
+          }
+        `}
+      >
         Life Sucks, But I'm Still Here
       </div>
-      <div className="text-white text-7xl md:text-8xl lg:text-9xl">
+      <div 
+        className={`
+          text-white text-7xl md:text-8xl lg:text-9xl
+          ${allWindowsClosed 
+            ? 'animate-[clock-fade-in_0.5s_ease-out_forwards]'
+            : 'animate-[clock-fade-out_0.5s_ease-out_forwards]'
+          }
+        `}
+      >
         {time}
       </div>
     </div>
