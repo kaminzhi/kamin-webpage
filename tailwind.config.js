@@ -28,14 +28,6 @@ module.exports = {
           '0%': { opacity: '1' },
           '100%': { opacity: '0' }
         },
-        marquee: {
-          '0%': { transform: 'translateX(0)' },
-          '100%': { transform: 'translateX(-100%)' }
-        },
-        reset: {
-          '0%': { transform: 'translateX(var(--tw-translate-x, 0))' },
-          '100%': { transform: 'translateX(0)' }
-        },
         'needle-down': {
           '0%': { transform: 'rotate(-100deg)' },
           '30%': { transform: 'rotate(-15deg)' },
@@ -63,8 +55,6 @@ module.exports = {
         'hint-fade-out': 'hint-fade-out 0.5s ease-out forwards',
         clockFadeIn: 'clockFadeIn 1s ease-out forwards',
         clockFadeOut: 'clockFadeOut 0.5s ease-out forwards',
-        marquee: 'marquee 15s linear infinite',
-        reset: 'reset 0.3s ease-out forwards',
         'spin-slow': 'spin 8s linear infinite',
         'bounce-slow': 'bounce-slow 2s ease-in-out infinite',
         'hint-bounce': 'hint-bounce 2s ease-in-out infinite',
