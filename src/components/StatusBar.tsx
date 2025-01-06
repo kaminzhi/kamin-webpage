@@ -205,7 +205,7 @@ const StatusBar: React.FC<StatusBarProps> = ({
   };
 
   return (
-    <div className="fixed top-0 left-0 right-0 h-12 bg-black bg-opacity-80 backdrop-blur-md z-40 flex items-center px-4">
+    <div className="fixed top-0 left-0 right-0 h-12 bg-black bg-opacity-80 backdrop-blur-md z-40 flex items-center px-2 md:px-4">
       <div className="flex-1 flex items-center space-x-4">
         <TaskbarButton
           title={iframeConfig.blog.title}
@@ -217,11 +217,11 @@ const StatusBar: React.FC<StatusBarProps> = ({
       <div className="flex-1 flex justify-center pointer-events-none">
         <Clock allWindowsClosed={allWindowsClosed} />
       </div>
-      <div className="flex-1 flex items-center justify-end space-x-4">
+      <div className="flex-1 flex items-center justify-end space-x-1 md:space-x-4">
         <div ref={volumeRef}>
           <button 
             onClick={() => setIsVolumePanelOpen(!isVolumePanelOpen)}
-            className="p-1.5 rounded-full hover:bg-white hover:bg-opacity-10 transition-colors relative"
+            className="p-1 md:p-1.5 rounded-full hover:bg-white hover:bg-opacity-10 transition-colors relative"
           >
             {isMuted || volume === 0 ? (
               <VolumeX size={20} className="text-white" />
@@ -248,7 +248,7 @@ const StatusBar: React.FC<StatusBarProps> = ({
         <div ref={wifiRef}>
           <button 
             onClick={() => setIsWifiPanelOpen(!isWifiPanelOpen)}
-            className="p-1.5 rounded-full hover:bg-white hover:bg-opacity-10 transition-colors relative"
+            className="p-1 md:p-1.5 rounded-full hover:bg-white hover:bg-opacity-10 transition-colors relative"
           >
             <Wifi size={20} className="text-white" />
           </button>
@@ -257,7 +257,7 @@ const StatusBar: React.FC<StatusBarProps> = ({
         <div ref={batteryRef}>
           <button
             onClick={() => setIsBatteryPanelOpen(!isBatteryPanelOpen)}
-            className="p-1.5 rounded-full hover:bg-white hover:bg-opacity-10 transition-colors relative"
+            className="p-1 md:p-1.5 rounded-full hover:bg-white hover:bg-opacity-10 transition-colors relative"
           >
             <StatusBarBatteryIcon />
           </button>
