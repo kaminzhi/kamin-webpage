@@ -161,10 +161,16 @@ const StatusBar: React.FC<StatusBarProps> = ({
     if (newVolume > 0) {
       setIsMuted(false);
     }
+    if (audioRef.current) {
+      audioRef.current.volume = newVolume / 100;
+    }
   };
 
   const toggleMute = () => {
     setIsMuted(!isMuted);
+    if (audioRef.current) {
+      audioRef.current.volume = !isMuted ? 0 : volume / 100;
+    }
   };
 
   const togglePlay = () => {
