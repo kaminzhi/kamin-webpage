@@ -8,6 +8,7 @@ import VolumePanel from './VolumePanel';
 import BatteryPanel from './BatteryPanel';
 import { backgroundMusic } from '@/config/music';
 import TaskbarButton from './TaskbarButton';
+import { iframeConfig } from '@/config/iframe';
 
 interface StatusBarProps {
   allWindowsClosed: boolean;
@@ -207,7 +208,7 @@ const StatusBar: React.FC<StatusBarProps> = ({
     <div className="fixed top-0 left-0 right-0 h-12 bg-black bg-opacity-80 backdrop-blur-md z-40 flex items-center px-4">
       <div className="flex-1 flex items-center space-x-4">
         <TaskbarButton
-          title="My Blog"
+          title={iframeConfig.blog.title}
           isActive={currentWindow === 'blog'}
           isOpen={isBlogOpen}
           onClick={onBlogClick}
