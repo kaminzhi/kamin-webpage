@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { Mail, Github, Linkedin, Instagram, Twitter, Facebook } from 'lucide-react';
+import { Mail, Github, Linkedin, Instagram, Twitter, Facebook, Music } from 'lucide-react';
 import { FaDiscord, FaTelegram } from 'react-icons/fa';
 import { iframeConfig } from '@/config/iframe';
 
@@ -15,11 +15,25 @@ const WindowContent: React.FC<WindowContentProps> = ({ type }) => {
       return (
         <div className="p-4 md:p-6 animate-fadeIn">
           <div className="flex flex-col md:flex-row items-center justify-center md:space-x-6 mb-6">
-            <img 
-              src="https://avatars.githubusercontent.com/u/72861268?v=4" 
-              alt="kamin_zhi avatar" 
-              className="w-32 h-32 md:w-64 md:h-64 rounded-full shadow-lg mb-4 md:mb-0" 
-            />
+            <div className="flex items-center relative">
+              <div className="relative w-32 h-32 md:w-64 md:h-64">
+                <div className="absolute inset-0 rounded-full bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 animate-spin-slow" />
+                <div className="absolute inset-[6px] md:inset-[8px] bg-white rounded-full">
+                  <img 
+                    src="https://avatars.githubusercontent.com/u/72861268?v=4" 
+                    alt="kamin_zhi avatar" 
+                    className="w-full h-full rounded-full shadow-lg" 
+                  />
+                </div>
+              </div>
+              <div className="absolute top-2 right-3 md:top-8 md:right-10">
+                <div className="relative">
+                  <Music className="w-8 h-8 md:w-10 md:h-10 text-blue-500 animate-pulse [animation-duration:2s]" />
+                  <Music className="w-6 h-6 md:w-8 md:h-8 text-purple-500 animate-pulse [animation-duration:1.5s] absolute -top-3 -right-3" />
+                  <Music className="w-6 h-6 md:w-7 md:h-7 text-pink-500 animate-pulse [animation-duration:1s] absolute -top-3 -left-3" />
+                </div>
+              </div>
+            </div>
             <h2 className="text-xl md:text-2xl font-bold text-black">kamin_zhi (神奇海螺)</h2>
           </div>
           <p className="text-black mb-2 text-center text-xl">

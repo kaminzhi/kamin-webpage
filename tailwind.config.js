@@ -34,7 +34,8 @@ module.exports = {
         clockFadeIn: 'clockFadeIn 1s ease-out forwards',
         clockFadeOut: 'clockFadeOut 0.5s ease-out forwards',
         marquee: 'marquee 15s linear infinite',
-        reset: 'reset 0.3s ease-out forwards'
+        reset: 'reset 0.3s ease-out forwards',
+        'spin-slow': 'spin 8s linear infinite',
       }
     }
   },
