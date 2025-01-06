@@ -8,6 +8,7 @@ import { WindowState } from '../../types';
 import Background from './Background';
 
 const HomePage: React.FC = () => {
+  const [isLoaded, setIsLoaded] = useState(false);
   const [windows, setWindows] = useState<Record<string, WindowState>>({
     about: { isOpen: false, isActive: false },
     projects: { isOpen: false, isActive: false },
@@ -19,9 +20,14 @@ const HomePage: React.FC = () => {
   const [isHintVisible, setIsHintVisible] = useState(true);
   const [hintAnimationDone, setHintAnimationDone] = useState(false);
 
+  // 檢查視窗是否關閉
   const allWindowsClosed = useMemo(() => {
     return Object.values(windows).every(window => !window.isOpen);
   }, [windows]);
+
+  useEffect(() => {
+    setIsLoaded(true);
+  }, []);
 
   useEffect(() => {
     const checkMobile = () => {
@@ -55,7 +61,8 @@ const HomePage: React.FC = () => {
   useEffect(() => {
     const timer = setTimeout(() => {
       setShowBlogHint(true);
-    }, 3000);
+    }, 3000);  // 3秒後顯示
+
     return () => clearTimeout(timer);
   }, []);
 
@@ -64,19 +71,30 @@ const HomePage: React.FC = () => {
       const newState = { ...prev };
       
       if (newState[window].isActive) {
-        newState[window].isActive = false;
+        newState[window] = {
+          ...newState[window],
+          isActive: false,
+        };
+
         setTimeout(() => {
           setWindows(current => ({
             ...current,
-            [window]: { isOpen: false, isActive: false }
+            [window]: {
+              ...current[window],
+              isOpen: false,
+            }
           }));
         }, 700);
+
         return newState;
       }
 
       Object.keys(newState).forEach(key => {
         if (newState[key].isActive) {
-          newState[key].isActive = false;
+          newState[key] = {
+            ...newState[key],
+            isActive: false,
+          };
         }
       });
 
@@ -84,26 +102,37 @@ const HomePage: React.FC = () => {
     });
 
     if (!windows[window].isActive) {
-      setTimeout(() => {
+      const openNewWindow = () => {
         setWindows(current => {
           const nextState = { ...current };
           Object.keys(nextState).forEach(key => {
-            nextState[key] = {
-              isOpen: key === window,
-              isActive: false
-            };
+            if (key !== window) {
+              nextState[key] = {
+                ...nextState[key],
+                isOpen: false,
+              };
+            }
           });
-          
-          setTimeout(() => {
-            setWindows(current => ({
-              ...current,
-              [window]: { isOpen: true, isActive: true }
-            }));
-          }, 50);
-          
+          nextState[window] = {
+            ...nextState[window],
+            isOpen: true,
+            isActive: false,
+          };
           return nextState;
         });
-      }, 350);
+
+        setTimeout(() => {
+          setWindows(current => ({
+            ...current,
+            [window]: {
+              ...current[window],
+              isActive: true,
+            }
+          }));
+        }, 50);
+      };
+
+      setTimeout(openNewWindow, 350);
     }
   };
 
@@ -117,23 +146,43 @@ const HomePage: React.FC = () => {
       setWindows(prev => {
         const newState = {
           ...prev,
-          [window]: { isOpen: false, isActive: false }
+          [window]: { ...prev[window], isOpen: false }
         };
 
-        const nextWindow = Object.entries(newState)
-          .find(([key, win]) => win.isOpen)?.[0];
+        const remainingWindows = Object.entries(newState).filter(([key, win]) => win.isOpen);
+        if (remainingWindows.length > 0) {
+          const [firstKey] = remainingWindows[0];
 
-        if (nextWindow) {
-          newState[nextWindow].isActive = true;
+          newState[firstKey] = {
+            ...newState[firstKey],
+            isActive: false,
+          };
         }
 
         return newState;
+      });
+
+      requestAnimationFrame(() => {
+        setWindows(current => {
+          const remainingWindows = Object.entries(current).filter(([key, win]) => win.isOpen);
+          if (remainingWindows.length > 0) {
+            const [firstKey] = remainingWindows[0];
+            return {
+              ...current,
+              [firstKey]: {
+                ...current[firstKey],
+                isActive: true,
+              }
+            };
+          }
+          return current;
+        });
       });
     }, 500);
   };
 
   return (
-    <div className="min-h-screen relative overflow-hidden animate-fadeIn">
+    <div className="min-h-screen relative overflow-hidden">
       <Background />
       <StatusBar 
         allWindowsClosed={allWindowsClosed} 
@@ -171,7 +220,7 @@ const HomePage: React.FC = () => {
           </div>
         </div>
       )}
-      <div className="h-[calc(100vh-6rem)] mt-14">
+      <div className={`h-[calc(100vh-6rem)] mt-14 ${isLoaded ? 'opacity-100' : 'opacity-0'}`}>
         {Object.entries(windows).map(([key, window]) =>
           window.isOpen ? (
             <WindowPane
@@ -180,6 +229,7 @@ const HomePage: React.FC = () => {
               type={key}
               isActive={window.isActive}
               onClose={() => handleClose(key)}
+              isLoaded={isLoaded}
             />
           ) : null
         )}

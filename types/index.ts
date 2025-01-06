@@ -8,6 +8,7 @@ export interface WindowPaneProps {
   type: string;
   onClose: () => void;
   isActive: boolean;
+  isLoaded: boolean;
 }
 
 export interface TaskbarButtonProps {

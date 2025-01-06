@@ -11,6 +11,7 @@ const WindowPane: React.FC<WindowPaneProps> = ({
   type,
   onClose,
   isActive,
+  isLoaded,
 }) => {
   const [windowSize, setWindowSize] = useState({ width: 0, height: 0 });
 
@@ -20,13 +21,24 @@ const WindowPane: React.FC<WindowPaneProps> = ({
         const vw = window.innerWidth;
         const vh = window.innerHeight;
 
-        const widthPercent = vw >= 1536 ? 0.82 : // 2xl
-                           vw >= 1280 ? 0.86 : // xl
-                           vw >= 1024 ? 0.90 : // lg
-                           vw >= 768  ? 0.94 : // md
-                           1; // mobile
-        const width = Math.floor(vw * widthPercent) & ~1;
-        const height = Math.floor(vh - (vw >= 768 ? 140 : 120)) & ~1;
+        let width = vw;
+        let height = vh - 120;
+
+        if (vw >= 768) {
+          if (vw >= 1536) { // 2xl
+            width = Math.floor(vw * 0.82);
+          } else if (vw >= 1280) { // xl
+            width = Math.floor(vw * 0.86);
+          } else if (vw >= 1024) { // lg
+            width = Math.floor(vw * 0.90);
+          } else {
+            width = Math.floor(vw * 0.94);
+          }
+          height = vh - 140;
+        }
+        
+        width = width - (width % 2);
+        height = height - (height % 2);
 
         setWindowSize({ width, height });
       }
