@@ -33,9 +33,12 @@ const ClockDisplay = memo(({ time, position, allWindowsClosed }: ClockDisplayPro
         fixed left-1/2 -translate-x-1/2
         top-[35vh] md:top-[calc(42vh+2rem)]
         flex flex-col items-center gap-4
-        transition-opacity duration-500 ease-in-out
-        ${allWindowsClosed ? 'opacity-100' : 'opacity-0'}
+        transition-all duration-500 ease-in-out
         whitespace-nowrap
+        ${allWindowsClosed 
+          ? 'opacity-100 animate-clockFadeIn' 
+          : 'opacity-0 animate-clockFadeOut'
+        }
       `}
     >
       <div className="text-white text-2xl md:text-3xl lg:text-4xl">

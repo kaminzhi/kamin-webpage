@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { Mail, Github, Linkedin, Instagram, Twitter, Facebook } from 'lucide-react';
-import { FaDiscord } from 'react-icons/fa';
+import { FaDiscord, FaTelegram } from 'react-icons/fa';
 import { iframeConfig } from '@/config/iframe';
 
 interface WindowContentProps {
@@ -59,9 +59,9 @@ const WindowContent: React.FC<WindowContentProps> = ({ type }) => {
                   <p className="text-gray-600">2023 - 全國專題競賽 佳作</p>
                 </div>
                 <div className="border-l-2 border-blue-500 pl-4">
-                  <h4 className="font-medium text-black">學校</h4>
-                  <p className="text-gray-600">2020 - 2023 國立新化高級工業職業學校</p>
-                  <p className="text-gray-600">2023 - 就學中... 國立雲林科技大學</p>
+                  <h4 className="font-medium text-lg text-black">學校</h4>
+                  <p className="text-gray-600">2020 ~ 2023 國立新化高級工業職業學校</p>
+                  <p className="text-gray-600">2023 ~ (就學中...) 國立雲林科技大學</p>
                 </div>
               </div>
             </div>
@@ -140,40 +140,88 @@ const WindowContent: React.FC<WindowContentProps> = ({ type }) => {
           </div>
           <div className="max-w-md mx-auto space-y-4">
             <a href="mailto:kamin@kaminzhi.com" 
-              className="flex items-center p-4 bg-gray-50 bg-opacity-50 backdrop-blur-sm rounded-lg hover:bg-gray-100 hover:bg-opacity-60 transition-colors">
+              className="flex items-center p-4 bg-gray-50 bg-opacity-50 backdrop-blur-sm rounded-lg
+                hover:bg-gray-100 hover:bg-opacity-60 
+                transition-all duration-200
+                hover:scale-[1.02] hover:shadow-lg
+                active:scale-95"
+            >
               <Mail className="mr-4 text-blue-500" />
               <span className="text-black">kamin@kaminzhi.com</span>
             </a>
             <a href="https://github.com/kaminzhi" 
-              className="flex items-center p-4 bg-gray-50 bg-opacity-50 backdrop-blur-sm rounded-lg hover:bg-gray-100 hover:bg-opacity-60 transition-colors">
+              className="flex items-center p-4 bg-gray-50 bg-opacity-50 backdrop-blur-sm rounded-lg
+              hover:bg-gray-100 hover:bg-opacity-60 
+              transition-all duration-200
+              hover:scale-[1.02] hover:shadow-lg
+              active:scale-95"
+            >
               <Github className="mr-4 text-gray-700" />
               <span className="text-black">GitHub Profile</span>
             </a>
+            <a href="https://t.me/kamin_zhi" 
+              className="flex items-center p-4 bg-gray-50 bg-opacity-50 backdrop-blur-sm rounded-lg
+                hover:bg-gray-100 hover:bg-opacity-60 
+                transition-all duration-200
+                hover:scale-[1.02] hover:shadow-lg
+                active:scale-95"
+            >
+              <FaTelegram className="mr-4 text-blue-400 text-2xl" size={24} />
+              <span className="text-black">Telegram（kamin_zhi）</span>
+            </a>
             <a href="https://www.instagram.com/kamin_zhi/" 
-              className="flex items-center p-4 bg-gray-50 bg-opacity-50 backdrop-blur-sm rounded-lg hover:bg-gray-100 hover:bg-opacity-60 transition-colors">
+              className="flex items-center p-4 bg-gray-50 bg-opacity-50 backdrop-blur-sm rounded-lg
+                hover:bg-gray-100 hover:bg-opacity-60 
+                transition-all duration-200
+                hover:scale-[1.02] hover:shadow-lg
+                active:scale-95"
+            >
               <Instagram className="mr-4 text-red-400" />
               <span className="text-black">Instagram（kamin_zhi）</span>
             </a>
             <a href="https://twitter.com/kamin_zhi" 
-              className="flex items-center p-4 bg-gray-50 bg-opacity-50 backdrop-blur-sm rounded-lg hover:bg-gray-100 hover:bg-opacity-60 transition-colors">
+              className="flex items-center p-4 bg-gray-50 bg-opacity-50 backdrop-blur-sm rounded-lg
+                hover:bg-gray-100 hover:bg-opacity-60 
+                transition-all duration-200
+                hover:scale-[1.02] hover:shadow-lg
+                active:scale-95"
+            >
               <Twitter className="mr-4 text-blue-600" />
               <span className="text-black">Twitter（kamin_zhi）</span>
             </a>
             <a href="https://discordapp.com/users/kamin_zhi" 
-              className="flex items-center p-4 bg-gray-50 bg-opacity-50 backdrop-blur-sm rounded-lg hover:bg-gray-100 hover:bg-opacity-60 transition-colors">
+              className="flex items-center p-4 bg-gray-50 bg-opacity-50 backdrop-blur-sm rounded-lg
+                hover:bg-gray-100 hover:bg-opacity-60 
+                transition-all duration-200
+                hover:scale-[1.02] hover:shadow-lg
+                active:scale-95"
+            >
               <FaDiscord className="mr-4 text-blue-600 text-2xl" size={24} />
               <span className="text-black">Discord（神奇海螺）遊戲好玩</span>
             </a>
             <a href="https://www.facebook.com/kaminzhi1" 
-              className="flex items-center p-4 bg-gray-50 bg-opacity-50 backdrop-blur-sm rounded-lg hover:bg-gray-100 hover:bg-opacity-60 transition-colors">
+              className="flex items-center p-4 bg-gray-50 bg-opacity-50 backdrop-blur-sm rounded-lg
+                hover:bg-gray-100 hover:bg-opacity-60 
+                transition-all duration-200
+                hover:scale-[1.02] hover:shadow-lg
+                active:scale-95"
+            >
               <Facebook className="mr-4 text-blue-600" />
               <span className="text-black">Facebook（陳品誌）</span>
             </a>
             <a href="" 
-              className="flex items-center p-4 bg-gray-50 bg-opacity-50 backdrop-blur-sm rounded-lg hover:bg-gray-100 hover:bg-opacity-60 transition-colors">
+              className="flex items-center p-4 bg-gray-50 bg-opacity-50 backdrop-blur-sm rounded-lg
+                hover:bg-gray-100 hover:bg-opacity-60 
+                transition-all duration-200
+                hover:scale-[1.02] hover:shadow-lg
+                active:scale-95"
+            >
               <Linkedin className="mr-4 text-blue-600" />
               <del className='text-black'><span className="text-black">LinkedIn Profile (不對我沒有LinkedIn)</span></del>
             </a>
+          <p className="text-black text-center mt-4 text-xl">
+          沒了就這樣，你在期待甚麼 (◐‿◑)
+          </p>
           </div>
         </div>
       );
