@@ -15,30 +15,42 @@ interface ClockDisplayProps {
 const ClockDisplay = memo(({ time, position, allWindowsClosed }: ClockDisplayProps) => {
   const [showText, setShowText] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+    setIsVisible(true);
+  }, []);
 
   useEffect(() => {
     if (allWindowsClosed) {
       setIsVisible(true);
       const timer = setTimeout(() => {
         setShowText(true);
-      }, 500);
+      }, 700);
       return () => clearTimeout(timer);
     } else {
       setShowText(false);
       const timer = setTimeout(() => {
         setIsVisible(false);
-      }, 500);
+      }, 700);
       return () => clearTimeout(timer);
     }
   }, [allWindowsClosed]);
+
+  if (!mounted) return null;
 
   if (position === 'top') {
     return (
       <div 
         className={`
           text-white fixed left-1/2 -translate-x-1/2 top-3 text-lg
-          transition-opacity duration-500 ease-in-out
-          ${allWindowsClosed ? 'opacity-0' : 'opacity-100'}
+          transition-all duration-700 ease-in-out
+          transform-gpu will-change-transform
+          ${allWindowsClosed 
+            ? 'opacity-0 translate-y-[-20px] scale-95'
+            : 'opacity-100 translate-y-0 scale-100'
+          }
         `}
       >
         {time}
@@ -46,36 +58,61 @@ const ClockDisplay = memo(({ time, position, allWindowsClosed }: ClockDisplayPro
     );
   }
 
-  if (!isVisible && !allWindowsClosed) return null;
-
   return (
     <div
       className={`
         fixed left-1/2 -translate-x-1/2
-        top-1/2 -translate-y-1/2 md:top-[calc(42vh+2rem)]
-        flex flex-col items-center gap-8
+        ${position === 'center' 
+          ? 'top-[50vh] -translate-y-1/2' 
+          : 'top-3'
+        }
+        flex flex-col items-center gap
         whitespace-nowrap
+        transition-all duration-700 ease-in-out
+        transform-gpu will-change-transform
+        ${allWindowsClosed 
+          ? 'opacity-100 translate-y-0 scale-100'
+          : 'opacity-0 translate-y-20 scale-95'
+        }
+        max-w-[95vw]
       `}
+      style={{ 
+        position: 'fixed',
+        transform: `translate(-50%, ${position === 'center' ? '-50%' : '0'}) ${
+          allWindowsClosed ? 'translateY(0)' : 'translateY(20px)'
+        }`
+      }}
     >
       <div 
         className={`
-          text-white text-2xl md:text-3xl lg:text-4xl
+          text-white
+          transition-all duration-700 ease-in-out
+          font-['Carter_One']
           ${allWindowsClosed 
-            ? (showText ? 'animate-[clock-fade-in_0.5s_ease-out_forwards]' : 'opacity-0')
-            : 'animate-[clock-fade-out_0.5s_ease-out_forwards]'
+            ? (showText ? 'opacity-100 scale-100 translate-y-0' : 'opacity-0 scale-95 translate-y-10')
+            : 'opacity-0 scale-95 -translate-y-10'
           }
         `}
+        style={{
+          fontSize: 'clamp(2rem, 3vw, 4rem)'
+        }}
       >
         Life Sucks, But I'm Still Here
       </div>
       <div 
         className={`
-          text-white text-7xl md:text-8xl lg:text-9xl
+          text-white
+          transition-all duration-700 ease-in-out
+          transform
+          font-['Salsa']
           ${allWindowsClosed 
-            ? 'animate-[clock-fade-in_0.5s_ease-out_forwards]'
-            : 'animate-[clock-fade-out_0.5s_ease-out_forwards]'
+            ? 'opacity-100 translate-y-0 scale-100'
+            : 'opacity-0 -translate-y-20 scale-90'
           }
         `}
+        style={{
+          fontSize: 'clamp(7rem, 9vw, 10rem)'
+        }}
       >
         {time}
       </div>

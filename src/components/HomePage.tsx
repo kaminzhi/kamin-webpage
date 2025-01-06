@@ -6,6 +6,7 @@ import WindowPane from './WindowPane';
 import TaskbarButton from './TaskbarButton';
 import { WindowState } from '../../types';
 import Background from './Background';
+import { viewConfig } from '@/config/view';
 
 const HomePage: React.FC = () => {
   const [isLoaded, setIsLoaded] = useState(false);
@@ -215,7 +216,7 @@ const HomePage: React.FC = () => {
               />
             </svg>
             <span className="text-sm font-medium px-2 py-1 rounded mt-1">
-              View my blog
+              {viewConfig.tip}
             </span>
           </div>
         </div>
