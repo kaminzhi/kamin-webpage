@@ -15,9 +15,10 @@ const HomePage: React.FC = () => {
     contact: { isOpen: false, isMinimized: false, isActive: false, isVisible: false, position: 1 },
     blog: { isOpen: false, isMinimized: false, isActive: false, isVisible: false, position: 1 },
   });
-  const [showBlogHint, setShowBlogHint] = useState(true);
+  const [showBlogHint, setShowBlogHint] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const [isHintVisible, setIsHintVisible] = useState(true);
+  const [hintAnimationDone, setHintAnimationDone] = useState(false);
 
   // 檢查視窗是否關閉
   const allWindowsClosed = useMemo(() => {
@@ -39,22 +40,33 @@ const HomePage: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    // 檢查是否有任何視窗處於開啟或正在開啟的狀態
     const anyWindowOpen = Object.values(windows).some(window => 
       window.isOpen || window.isActive || window.isVisible
     );
     
     if (anyWindowOpen) {
-      // 立即隱藏 hint
-      setIsHintVisible(false);
+      // 先設置動畫狀態
+      setHintAnimationDone(false);
+      // 執行淡出動畫
+      const timer = setTimeout(() => {
+        setIsHintVisible(false);
+      }, 100); // 給淡出動畫時間
+      return () => clearTimeout(timer);
     } else {
-      // 所有視窗都關閉後，等待動畫完成再顯示 hint
       const timer = setTimeout(() => {
         setIsHintVisible(true);
-      }, 700); // 與視窗關閉動畫時間同步
+      }, 300);
       return () => clearTimeout(timer);
     }
   }, [windows]);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setShowBlogHint(true);
+    }, 3000);  // 3秒後顯示
+
+    return () => clearTimeout(timer);
+  }, []);
 
   const handleWindowClick = (window: string) => {
     setWindows(prev => {
@@ -199,25 +211,32 @@ const HomePage: React.FC = () => {
       />
       {showBlogHint && (
         <div className={`absolute top-14 flex flex-col items-center text-white z-50
-          transition-all duration-500 ease-in-out
-          ${isHintVisible ? 'opacity-100 animate-bounce' : 'opacity-0 pointer-events-none translate-y-[-10px]'}
-          ${isMobile ? 'left-[-0.3rem]' : 'left-2'}`}>
-          <svg 
-            className="w-6 h-6"
-            fill="none" 
-            stroke="currentColor" 
-            viewBox="0 0 24 24"
-          >
-            <path 
-              strokeLinecap="round" 
-              strokeLinejoin="round" 
-              strokeWidth={2} 
-              d="M5 10l7-7m0 0l7 7m-7-7v18"
-            />
-          </svg>
-          <span className="text-sm font-medium px-2 py-1 rounded mt-1">
-            View my blog
-          </span>
+          ${isHintVisible ? 'animate-hint-fade-in opacity-100' : 'animate-hint-fade-out opacity-0'} 
+          transition-all duration-500
+          ${isMobile ? 'left-[-0.3rem]' : 'left-2'}`}
+          onAnimationEnd={(e) => {
+            if (e.animationName.includes('hint-fade-in')) {
+              setHintAnimationDone(true);
+            }
+          }}>
+          <div className={`flex flex-col items-center ${hintAnimationDone ? 'animate-hint-bounce' : ''}`}>
+            <svg 
+              className="w-6 h-6"
+              fill="none" 
+              stroke="currentColor" 
+              viewBox="0 0 24 24"
+            >
+              <path 
+                strokeLinecap="round" 
+                strokeLinejoin="round" 
+                strokeWidth={2} 
+                d="M5 10l7-7m0 0l7 7m-7-7v18"
+              />
+            </svg>
+            <span className="text-sm font-medium px-2 py-1 rounded mt-1">
+              View my blog
+            </span>
+          </div>
         </div>
       )}
       <div className={`h-[calc(100vh-6rem)] mt-14 ${isLoaded ? 'opacity-100' : 'opacity-0'}`}>
