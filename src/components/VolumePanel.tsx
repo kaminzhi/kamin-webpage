@@ -40,8 +40,21 @@ const VolumePanel: React.FC<VolumePanelProps> = ({
 }) => {
   const [shouldScrollTitle, setShouldScrollTitle] = useState(false);
   const [shouldScrollArtist, setShouldScrollArtist] = useState(false);
+  const [isMobileDevice, setIsMobileDevice] = useState(false);
   const titleRef = useRef<HTMLDivElement>(null);
   const artistRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const checkMobileDevice = () => {
+      const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent) ||
+        (navigator.maxTouchPoints !== undefined && navigator.maxTouchPoints > 2);
+      setIsMobileDevice(!!isMobile);
+    };
+    
+    checkMobileDevice();
+    window.addEventListener('resize', checkMobileDevice);
+    return () => window.removeEventListener('resize', checkMobileDevice);
+  }, []);
 
   useEffect(() => {
     if (titleRef.current) {
@@ -215,42 +228,49 @@ const VolumePanel: React.FC<VolumePanelProps> = ({
           </div>
         </div>
 
-        <div className="flex items-center space-x-3 pt-2 border-t border-white border-opacity-10">
-          <button
-            onClick={onMuteToggle}
-            className="p-3 rounded-full hover:bg-white hover:bg-opacity-10 transition-colors"
-          >
-            {isMuted || volume === 0 ? (
-              <VolumeX size={24} className="text-white" />
-            ) : (
-              <Volume2 size={24} className="text-white" />
-            )}
-          </button>
-          <div 
-            className="relative flex-1 h-1.5 bg-white bg-opacity-20 rounded-full cursor-pointer group
-              touch-pan-x py-2"
-            onClick={(e) => {
-              const rect = e.currentTarget.getBoundingClientRect();
-              const x = e.clientX - rect.left;
-              const percentage = x / rect.width;
-              onVolumeChange(Math.round(percentage * 100));
-            }}
-            onMouseDown={(e) => handleSliderDrag(e, (value) => onVolumeChange(Math.round(value)), 100)}
-            onTouchStart={(e) => handleTouchDrag(e, (value) => onVolumeChange(Math.round(value)), 100)}
-          >
-            <div
-              className="absolute top-0 left-0 h-full bg-white rounded-full group-hover:bg-blue-400 transition-colors"
-              style={{ width: `${isMuted ? 0 : volume}%` }}
-            />
+        <div className="flex flex-col space-y-2">
+          <div className="flex items-center space-x-3 pt-2 border-t border-white border-opacity-10">
+            <button
+              onClick={onMuteToggle}
+              className="p-3 rounded-full hover:bg-white hover:bg-opacity-10 transition-colors"
+            >
+              {isMuted || volume === 0 ? (
+                <VolumeX size={24} className="text-white" />
+              ) : (
+                <Volume2 size={24} className="text-white" />
+              )}
+            </button>
             <div 
-              className="absolute top-1/2 -translate-y-1/2 w-4 h-4 bg-white rounded-full shadow-lg 
-                opacity-0 group-hover:opacity-100 transition-opacity
-                touch-none
-                [@media(hover:none)]:opacity-100"
-              style={{ left: `${isMuted ? 0 : volume}%`, transform: 'translate(-50%, -50%)' }}
-            />
+              className="relative flex-1 h-1.5 bg-white bg-opacity-20 rounded-full cursor-pointer group
+                touch-pan-x py-2"
+              onClick={(e) => {
+                const rect = e.currentTarget.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const percentage = x / rect.width;
+                onVolumeChange(Math.round(percentage * 100));
+              }}
+              onMouseDown={(e) => handleSliderDrag(e, (value) => onVolumeChange(Math.round(value)), 100)}
+              onTouchStart={(e) => handleTouchDrag(e, (value) => onVolumeChange(Math.round(value)), 100)}
+            >
+              <div
+                className="absolute top-0 left-0 h-full bg-white rounded-full group-hover:bg-blue-400 transition-colors"
+                style={{ width: `${isMuted ? 0 : volume}%` }}
+              />
+              <div 
+                className="absolute top-1/2 -translate-y-1/2 w-4 h-4 bg-white rounded-full shadow-lg 
+                  opacity-0 group-hover:opacity-100 transition-opacity
+                  touch-none
+                  [@media(hover:none)]:opacity-100"
+                style={{ left: `${isMuted ? 0 : volume}%`, transform: 'translate(-50%, -50%)' }}
+              />
+            </div>
+            <span className="text-white text-sm min-w-[3ch]">{isMuted ? 0 : volume}%</span>
           </div>
-          <span className="text-white text-sm min-w-[3ch]">{isMuted ? 0 : volume}%</span>
+          {isMobileDevice && (
+            <div className="text-gray-400 text-xs text-center pt-1">
+              手機瀏覽器可能無法控制音樂音量，請使用裝置音量鍵調整
+            </div>
+          )}
         </div>
       </div>
     </div>
