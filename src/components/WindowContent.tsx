@@ -182,7 +182,7 @@ const WindowContent: React.FC<WindowContentProps> = ({ type }) => {
                 active:scale-95 active:shadow-md
                 hover:bg-gray-100 hover:bg-opacity-60"
             >
-              <div className="h-48 rounded-lg mb-4 overflow-hidden">
+              <div className="relative h-48 rounded-lg mb-4 overflow-hidden">
                 {project.image ? (
                   <img 
                     src={project.image} 
@@ -199,24 +199,22 @@ const WindowContent: React.FC<WindowContentProps> = ({ type }) => {
                     group-hover:opacity-90 transition-all duration-500 
                     group-hover:scale-110 group-hover:rotate-1" />
                 )}
-              </div>
-              <div className="flex justify-between mb-4">
-                <div>
-                  <h3 className="font-semibold text-xl text-black mb-2">{project.title}</h3>
-                  <p className="text-gray-600">{project.desc}</p>
-                </div>
-                <div className="flex items-start ml-4">
+                <div className="absolute top-4 right-4">
                   <img 
                     src={project.author.avatar}
                     alt={project.author.name}
-                    className="w-16 h-16 rounded-full border-2 border-gray-200 
+                    className="w-12 h-12 md:w-16 md:h-16 rounded-full border-2 border-gray-200 
                       hover:scale-110 transition-transform duration-200
                       hover:border-blue-400 shadow-md
                       hover:shadow-lg"
                   />
                 </div>
               </div>
-              <div className="flex justify-between items-end">
+              <div className="mb-4">
+                <h3 className="font-semibold text-xl text-black mb-2">{project.title}</h3>
+                <p className="text-gray-600">{project.desc}</p>
+              </div>
+              <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
                 <div className="flex flex-wrap gap-2">
                   {project.tech.map((tech, i) => (
                     <span key={i} className="px-3 py-1 bg-blue-200 text-gray-700 rounded-full text-sm
@@ -227,8 +225,8 @@ const WindowContent: React.FC<WindowContentProps> = ({ type }) => {
                   ))}
                 </div>
                 {project.languages && (
-                  <div className="flex flex-col items-end">
-                    <div className="flex h-2 overflow-hidden rounded-full bg-gray-200 w-64">
+                  <div className="flex flex-col w-full md:w-auto md:items-end">
+                    <div className="flex h-2 overflow-hidden rounded-full bg-gray-200 w-full md:w-64">
                       {project.languages.map((lang, i) => (
                         <div
                           key={i}
@@ -240,7 +238,7 @@ const WindowContent: React.FC<WindowContentProps> = ({ type }) => {
                         />
                       ))}
                     </div>
-                    <div className="mt-2 flex flex-wrap gap-x-4 text-sm text-gray-600 justify-end">
+                    <div className="mt-2 flex flex-wrap gap-x-4 text-sm text-gray-600 md:justify-end">
                       {project.languages.map((lang, i) => (
                         <div key={i} className="flex items-center gap-1">
                           <span
