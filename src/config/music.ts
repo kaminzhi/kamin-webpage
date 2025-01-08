@@ -12,7 +12,7 @@ export const defaultCover = '/images/music-default.png';  // 預設封面
 export const playlist: Song[] = [
 
   {
-    name: "233 AM",
+    name: "2:33 AM",
     artist: "しゃろう",
     file: "/music/233AM/223 AM.mp3",
     link: "https://www.youtube.com/watch?v=UztxQkaZLog",
@@ -26,6 +26,14 @@ export const playlist: Song[] = [
     link: "https://www.youtube.com/watch?v=UztxQkaZLog",
     cover: "/music/303PM/profile.jpg",
     artistLink: "https://www.youtube.com/@Sharou"
+  },
+  {
+    name: "おひるすぎ",
+    artist: "fai",
+    file: "/music/おひるすぎ/おひるすぎ.mp3",
+    link: "https://www.youtube.com/watch?v=Mpg8SVSdu_A",
+    cover: "/music/おひるすぎ/profile.png",
+    artistLink: "https://www.youtube.com/@fai_musics"
   },
   {
     name: "弟みたいな存在",
