@@ -6,7 +6,7 @@ import Clock from './Clock';
 import WifiPanel from './WifiPanel';
 import VolumePanel from './VolumePanel';
 import BatteryPanel from './BatteryPanel';
-import { backgroundMusic } from '@/config/music';
+import { playlist, defaultSong } from '@/config/music';
 import TaskbarButton from './TaskbarButton';
 import { iframeConfig } from '@/config/iframe';
 
@@ -54,18 +54,20 @@ const StatusBar: React.FC<StatusBarProps> = ({
   const [isWifiPanelOpen, setIsWifiPanelOpen] = useState(false);
   const [isVolumePanelOpen, setIsVolumePanelOpen] = useState(false);
   const [isBatteryPanelOpen, setIsBatteryPanelOpen] = useState(false);
-  const [volume, setVolume] = useState(20);
+  const [volume, setVolume] = useState(50);
   const [isMuted, setIsMuted] = useState(false);
   const [isAudioLoaded, setIsAudioLoaded] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
-  const [isLooping, setIsLooping] = useState(true);
+  const [isLooping, setIsLooping] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
   const wifiRef = useRef<HTMLDivElement>(null);
   const volumeRef = useRef<HTMLDivElement>(null);
   const batteryRef = useRef<HTMLDivElement>(null);
   const audioRef = useRef<HTMLAudioElement>(null);
-  const [currentSong] = useState(backgroundMusic);
+  const [currentSong, setCurrentSong] = useState(defaultSong);
+  const [repeatMode, setRepeatMode] = useState<'none' | 'single' | 'playlist'>('single');
+  const [localPlaylist, setLocalPlaylist] = useState(playlist);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -104,9 +106,7 @@ const StatusBar: React.FC<StatusBarProps> = ({
       const handleCanPlayThrough = () => {
         setIsAudioLoaded(true);
         setDuration(audio.duration);
-        // 在音頻加載完成後嘗試自動播放
         audio.play().catch(() => {
-          // 如果自動播放失敗，等待用戶交互
           const handleFirstInteraction = () => {
             audio.play().catch(() => {});
             document.removeEventListener('click', handleFirstInteraction);
@@ -121,19 +121,6 @@ const StatusBar: React.FC<StatusBarProps> = ({
 
       const handlePlay = () => setIsPlaying(true);
       const handlePause = () => setIsPlaying(false);
-      const handleEnded = () => {
-        if (!isLooping) {
-          setIsPlaying(false);
-        } else {
-          // 如果是循環模式，重新播放
-          const currentTime = audio.currentTime;
-          audio.play().then(() => {
-            if (audioRef.current) {
-              audioRef.current.currentTime = currentTime;
-            }
-          }).catch(() => {});
-        }
-      };
       const handleTimeUpdate = () => setCurrentTime(audio.currentTime);
       const handleDurationChange = () => setDuration(audio.duration);
 
@@ -154,7 +141,7 @@ const StatusBar: React.FC<StatusBarProps> = ({
         audio.removeEventListener('durationchange', handleDurationChange);
       };
     }
-  }, [isLooping]);
+  }, [repeatMode, currentSong]);
 
   const handleVolumeChange = (newVolume: number) => {
     setVolume(newVolume);
@@ -197,7 +184,16 @@ const StatusBar: React.FC<StatusBarProps> = ({
       const currentTime = audioRef.current.currentTime;
       const wasPlaying = !audioRef.current.paused;
       
-      setIsLooping(!isLooping);
+      setRepeatMode(current => {
+        switch (current) {
+          case 'none':
+            return 'single';
+          case 'single':
+            return 'playlist';
+          case 'playlist':
+            return 'none';
+        }
+      });
       
       // 保持當前播放位置和狀態
       if (wasPlaying && audioRef.current) {
@@ -208,6 +204,45 @@ const StatusBar: React.FC<StatusBarProps> = ({
         }).catch(() => {});
       }
     }
+  };
+
+  const handleSongChange = (song: typeof defaultSong) => {
+    setCurrentSong(song);
+    if (audioRef.current) {
+      audioRef.current.currentTime = 0;
+      setIsPlaying(true);
+      audioRef.current.play();
+    }
+  };
+
+  const handleEnded = () => {
+    if (repeatMode === 'single') {
+      // 單曲循環
+      if (audioRef.current) {
+        const currentTime = audioRef.current.currentTime;
+        audioRef.current.play().then(() => {
+          if (audioRef.current) {
+            audioRef.current.currentTime = 0;
+          }
+        }).catch(() => {});
+      }
+    } else if (repeatMode === 'playlist') {
+      // 歌單循環
+      const currentIndex = playlist.findIndex(song => song.file === currentSong.file);
+      const nextIndex = (currentIndex + 1) % playlist.length;
+      const currentTime = audioRef.current?.currentTime || 0;
+      handleSongChange(playlist[nextIndex]);
+      if (audioRef.current) {
+        audioRef.current.currentTime = 0;
+      }
+    } else {
+      // 不循環
+      setIsPlaying(false);
+    }
+  };
+
+  const handlePlaylistChange = (newPlaylist: typeof playlist) => {
+    setLocalPlaylist(newPlaylist);
   };
 
   return (
@@ -240,15 +275,18 @@ const StatusBar: React.FC<StatusBarProps> = ({
             volume={volume}
             isMuted={isMuted}
             isPlaying={isPlaying}
-            isLooping={isLooping}
+            repeatMode={repeatMode}
             currentTime={currentTime}
             duration={duration}
             currentSong={currentSong}
+            playlist={localPlaylist}
             onVolumeChange={handleVolumeChange}
             onMuteToggle={toggleMute}
             onPlayToggle={togglePlay}
             onLoopToggle={handleLoopToggle}
             onTimeChange={handleTimeChange}
+            onSongChange={handleSongChange}
+            onPlaylistChange={handlePlaylistChange}
           />
         </div>
         <div ref={wifiRef}>

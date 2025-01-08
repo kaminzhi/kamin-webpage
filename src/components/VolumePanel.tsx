@@ -1,26 +1,36 @@
 'use client';
 
 import React, { useState, useRef, useEffect } from 'react';
-import { Volume2, VolumeX, Music, Play, Pause, Repeat } from 'lucide-react';
+import { Volume2, VolumeX, Music, Play, Pause, Repeat, ListRestart, GripVertical, ChevronUp, ChevronDown, ExternalLink } from 'lucide-react';
+import { playlist, defaultCover } from '@/config/music';
+import Image from 'next/image';
+
+interface Song {
+  name: string;
+  artist: string;
+  file: string;
+  link?: string;
+  cover?: string;
+  artistLink?: string;
+}
 
 interface VolumePanelProps {
   isOpen: boolean;
   volume: number;
   isMuted: boolean;
   isPlaying: boolean;
-  isLooping: boolean;
+  repeatMode: 'none' | 'single' | 'playlist';
   currentTime: number;
   duration: number;
-  currentSong: {
-    name: string;
-    artist: string;
-    file: string;
-  };
+  currentSong: Song;
+  playlist: Song[];
   onVolumeChange: (volume: number) => void;
   onMuteToggle: () => void;
   onPlayToggle: () => void;
   onLoopToggle: () => void;
   onTimeChange: (time: number) => void;
+  onSongChange: (song: Song) => void;
+  onPlaylistChange?: (newPlaylist: Song[]) => void;
 }
 
 const VolumePanel: React.FC<VolumePanelProps> = ({
@@ -28,21 +38,27 @@ const VolumePanel: React.FC<VolumePanelProps> = ({
   volume,
   isMuted,
   isPlaying,
-  isLooping,
+  repeatMode,
   currentTime,
   duration,
   currentSong,
+  playlist = [],
   onVolumeChange,
   onMuteToggle,
   onPlayToggle,
   onLoopToggle,
   onTimeChange,
+  onSongChange,
+  onPlaylistChange,
 }) => {
   const [shouldScrollTitle, setShouldScrollTitle] = useState(false);
   const [shouldScrollArtist, setShouldScrollArtist] = useState(false);
   const [isMobileDevice, setIsMobileDevice] = useState(false);
+  const [isPlaylistOpen, setIsPlaylistOpen] = useState(false);
   const titleRef = useRef<HTMLDivElement>(null);
   const artistRef = useRef<HTMLDivElement>(null);
+  const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
+  const [dragOverIndex, setDragOverIndex] = useState<number | null>(null);
 
   useEffect(() => {
     const checkMobileDevice = () => {
@@ -128,6 +144,50 @@ const VolumePanel: React.FC<VolumePanelProps> = ({
     updateValue(e.touches[0].clientX);
   };
 
+  // 找到當前歌曲在播放列表中的索引
+  const currentIndex = playlist.findIndex(song => song.file === currentSong.file);
+
+  const getRepeatIcon = () => {
+    switch (repeatMode) {
+      case 'single':
+        return <Repeat size={24} className="hidden md:block" />;
+      case 'playlist':
+        return <ListRestart size={24} className="hidden md:block" />;
+      default:
+        return <Repeat size={24} className="text-gray-400 hidden md:block" />;
+    }
+  };
+
+  const handleDragStart = (index: number) => {
+    setDraggedIndex(index);
+  };
+
+  const handleDragOver = (e: React.DragEvent, index: number) => {
+    e.preventDefault();
+    setDragOverIndex(index);
+  };
+
+  const handleDrop = (e: React.DragEvent, index: number) => {
+    e.preventDefault();
+    if (draggedIndex === null || !onPlaylistChange) return;
+
+    const newPlaylist = [...playlist];
+    const [movedItem] = newPlaylist.splice(draggedIndex, 1);
+    newPlaylist.splice(index, 0, movedItem);
+    
+    onPlaylistChange(newPlaylist);
+    setDraggedIndex(null);
+    setDragOverIndex(null);
+  };
+
+  const handleMoveItem = (fromIndex: number, toIndex: number) => {
+    if (!onPlaylistChange) return;
+    const newPlaylist = [...playlist];
+    const [movedItem] = newPlaylist.splice(fromIndex, 1);
+    newPlaylist.splice(toIndex, 0, movedItem);
+    onPlaylistChange(newPlaylist);
+  };
+
   return (
     <div 
       className={`absolute top-full mt-2 w-[95vw] md:w-[420px] right-0 -translate-x-2 md:-translate-x-2
@@ -135,36 +195,97 @@ const VolumePanel: React.FC<VolumePanelProps> = ({
         transition-all duration-300 origin-top-right z-50
         ${isOpen ? 'scale-100 opacity-100' : 'scale-95 opacity-0 pointer-events-none'}`}
     >
-      <div className="space-y-4 md:space-y-5">
+      <div className={`space-y-2 ${isPlaylistOpen ? 'md:space-y-5' : ''}`}>
         <div className="flex items-center justify-between space-x-2 md:space-x-4">
           <div className="flex items-center space-x-2 md:space-x-4 min-w-0 flex-1">
-            <div className="p-2 md:p-3 bg-white bg-opacity-10 rounded-lg flex-shrink-0">
-              <Music size={20} className="text-white md:hidden" />
-              <Music size={24} className="text-white hidden md:block" />
-            </div>
-            <div className="min-w-0 flex-1">
-              <div className="text-white text-sm md:text-base font-medium flex items-center space-x-2 md:space-x-4 overflow-hidden">
-                <div className="overflow-hidden relative flex-1 group">
-                  <div 
-                    ref={titleRef}
-                    className={`whitespace-nowrap ${shouldScrollTitle ? 'group-hover:animate-marquee hover:animate-none animate-reset' : ''}`}
+            <button 
+              className={`
+                min-w-0 flex-1 text-left group p-2 md:p-3 rounded-lg
+                transition-all duration-300 ease-out transform
+                bg-white bg-opacity-10 hover:bg-opacity-20
+                hover:scale-[1.01] active:scale-[0.99]
+                flex items-center space-x-3
+                ${isPlaylistOpen ? 'bg-opacity-20' : ''}
+              `}
+              onClick={() => setIsPlaylistOpen(!isPlaylistOpen)}
+            >
+              <div className="relative w-12 h-12 flex-shrink-0 rounded-md overflow-hidden group/cover">
+                {currentSong.cover ? (
+                  <a
+                    href={currentSong.artistLink || currentSong.link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                    }}
+                    className="block w-full h-full relative group-hover/cover:opacity-80 transition-opacity"
                   >
-                    {currentSong.name}
+                    <Image
+                      src={currentSong.cover}
+                      alt={currentSong.name}
+                      fill
+                      className="object-cover"
+                      onError={(e) => {
+                        const target = e.target as HTMLImageElement;
+                        target.style.display = 'none';
+                        const parent = target.parentElement;
+                        if (parent) {
+                          parent.innerHTML = `<div class="w-full h-full bg-white bg-opacity-5 flex items-center justify-center">
+                            <svg class="text-gray-400" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                              <path d="M9 18V5l12-2v13"></path>
+                              <circle cx="6" cy="18" r="3"></circle>
+                              <circle cx="21" cy="16" r="3"></circle>
+                            </svg>
+                          </div>`;
+                        }
+                      }}
+                    />
+                    <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-0 group-hover/cover:bg-opacity-40 transition-all">
+                      <ExternalLink size={16} className="text-white opacity-0 group-hover/cover:opacity-100 transition-opacity transform scale-90 group-hover/cover:scale-100" />
+                    </div>
+                  </a>
+                ) : (
+                  <div className="w-full h-full bg-white bg-opacity-5 flex items-center justify-center">
+                    <Music size={24} className="text-gray-400" />
+                  </div>
+                )}
+              </div>
+              <div className="min-w-0 flex-1">
+                <div className="text-white text-sm md:text-base font-medium flex items-center space-x-2 md:space-x-4 overflow-hidden">
+                  <div className="overflow-hidden relative flex-1">
+                    <div 
+                      ref={titleRef}
+                      className={`whitespace-nowrap hover:animate-none ${shouldScrollTitle ? 'animate-marquee' : ''}`}
+                    >
+                      <span className="inline-block">{currentSong.name}</span>
+                      {shouldScrollTitle && (
+                        <>
+                          <span className="inline-block mx-4 opacity-0">-</span>
+                          <span className="inline-block">{currentSong.name}</span>
+                        </>
+                      )}
+                    </div>
+                  </div>
+                  <span className="text-xs md:text-sm text-gray-400 whitespace-nowrap flex-shrink-0 pl-2">
+                    • {isPlaying ? '正在播放' : '已暫停'}
+                  </span>
+                </div>
+                <div className="text-gray-400 text-xs md:text-sm overflow-hidden relative">
+                  <div 
+                    ref={artistRef}
+                    className={`whitespace-nowrap hover:animate-none ${shouldScrollArtist ? 'animate-marquee' : ''}`}
+                  >
+                    <span className="inline-block">{currentSong.artist}</span>
+                    {shouldScrollArtist && (
+                      <>
+                        <span className="inline-block mx-4 opacity-0">-</span>
+                        <span className="inline-block">{currentSong.artist}</span>
+                      </>
+                    )}
                   </div>
                 </div>
-                <span className="text-xs md:text-sm text-gray-400 whitespace-nowrap flex-shrink-0 pl-2">
-                  • {isPlaying ? '正在播放' : '已暫停'}
-                </span>
               </div>
-              <div className="text-gray-400 text-xs md:text-sm overflow-hidden relative group">
-                <div 
-                  ref={artistRef}
-                  className={`whitespace-nowrap ${shouldScrollArtist ? 'group-hover:animate-marquee hover:animate-none animate-reset' : ''}`}
-                >
-                  {currentSong.artist}
-                </div>
-              </div>
-            </div>
+            </button>
           </div>
           <div className="flex items-center space-x-1 md:space-x-2 flex-shrink-0">
             <button
@@ -185,15 +306,235 @@ const VolumePanel: React.FC<VolumePanelProps> = ({
             </button>
             <button
               onClick={onLoopToggle}
-              className={`p-2 md:p-3 rounded-full transition-colors ${
-                isLooping 
-                  ? 'bg-white bg-opacity-20 text-white' 
-                  : 'hover:bg-white hover:bg-opacity-10 text-gray-400'
-              }`}
+              className="p-2 md:p-3 rounded-full transition-colors relative"
             >
-              <Repeat size={20} className="md:hidden" />
-              <Repeat size={24} className="hidden md:block" />
+              {/* Container for background and icons */}
+              <div className={`
+                absolute inset-0 rounded-full transition-colors
+                ${repeatMode !== 'none'
+                  ? 'bg-white bg-opacity-20' 
+                  : 'hover:bg-white hover:bg-opacity-10'
+                }
+              `} />
+
+              {/* Icons container */}
+              <div className={`
+                relative z-[1]
+                ${repeatMode !== 'none' ? 'text-white' : 'text-gray-400'}
+              `}>
+                {/* Mobile icons with animation */}
+                <div className="md:hidden">
+                  <div className={`
+                    absolute inset-0 transition-all duration-300 transform
+                    ${repeatMode === 'none' ? 'opacity-100 scale-100' : 'opacity-0 scale-75 rotate-90'}
+                  `}>
+                    <Repeat size={20} className="text-gray-400" />
+                  </div>
+                  <div className={`
+                    absolute inset-0 transition-all duration-300 transform
+                    ${repeatMode === 'single' ? 'opacity-100 scale-100' : 'opacity-0 scale-75 rotate-90'}
+                  `}>
+                    <Repeat size={20} />
+                  </div>
+                  <div className={`
+                    absolute inset-0 transition-all duration-300 transform
+                    ${repeatMode === 'playlist' ? 'opacity-100 scale-100' : 'opacity-0 scale-75 rotate-90'}
+                  `}>
+                    <ListRestart size={20} />
+                  </div>
+                  {/* Placeholder to maintain button size */}
+                  <div className="opacity-0">
+                    <Repeat size={20} />
+                  </div>
+                </div>
+
+                {/* Desktop icons with animation */}
+                <div className="hidden md:block">
+                  <div className={`
+                    absolute inset-0 transition-all duration-300 transform
+                    ${repeatMode === 'none' ? 'opacity-100 scale-100' : 'opacity-0 scale-75 rotate-90'}
+                  `}>
+                    <Repeat size={24} className="text-gray-400" />
+                  </div>
+                  <div className={`
+                    absolute inset-0 transition-all duration-300 transform
+                    ${repeatMode === 'single' ? 'opacity-100 scale-100' : 'opacity-0 scale-75 rotate-90'}
+                  `}>
+                    <Repeat size={24} />
+                  </div>
+                  <div className={`
+                    absolute inset-0 transition-all duration-300 transform
+                    ${repeatMode === 'playlist' ? 'opacity-100 scale-100' : 'opacity-0 scale-75 rotate-90'}
+                  `}>
+                    <ListRestart size={24} />
+                  </div>
+                  {/* Placeholder to maintain button size */}
+                  <div className="opacity-0">
+                    <Repeat size={24} />
+                  </div>
+                </div>
+              </div>
+
+              {/* Mode indicator */}
+              <div 
+                className={`
+                  absolute -top-1.5 -right-1.5 
+                  transition-all duration-300 ease-out
+                  ${repeatMode !== 'none' 
+                    ? 'scale-100 opacity-100 translate-y-0' 
+                    : 'scale-50 opacity-0 translate-y-2'
+                  }
+                `}
+              >
+                <span 
+                  className={`
+                    text-[10px] font-bold 
+                    bg-white text-black rounded-full w-4 h-4 
+                    flex items-center justify-center
+                    transform transition-all duration-300
+                    z-[2]
+                    ${repeatMode === 'playlist' && 'animate-mode-rotate'}
+                  `}
+                >
+                  {repeatMode === 'single' ? '1' : 'A'}
+                </span>
+              </div>
             </button>
+          </div>
+        </div>
+
+        {/* Playlist Section */}
+        <div 
+          className={`overflow-hidden transition-all duration-300 ease-out
+            ${isPlaylistOpen ? 'max-h-[300px] opacity-100' : 'max-h-0 opacity-0'}`}
+        >
+          <div className="space-y-2 pt-2 border-t border-white border-opacity-10">
+            <div className="text-white text-sm font-medium mb-2">
+              播放清單 ({currentIndex + 1}/{playlist.length})
+            </div>
+            <div className="space-y-1 max-h-[250px] overflow-y-auto custom-scrollbar pr-2">
+              <style jsx global>{`
+                .custom-scrollbar::-webkit-scrollbar {
+                  width: 4px;
+                }
+                .custom-scrollbar::-webkit-scrollbar-track {
+                  background: rgba(255, 255, 255, 0.1);
+                  border-radius: 2px;
+                }
+                .custom-scrollbar::-webkit-scrollbar-thumb {
+                  background: rgba(255, 255, 255, 0.3);
+                  border-radius: 2px;
+                  transition: all 0.3s ease;
+                }
+                .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+                  background: rgba(255, 255, 255, 0.5);
+                }
+              `}</style>
+              {playlist.map((song, index) => (
+                <div
+                  key={index}
+                  data-index={index}
+                  className="group relative"
+                >
+                  <div className={`
+                    flex items-center
+                    rounded-lg transition-all duration-300 ease-out
+                    transform
+                    ${currentSong.file === song.file
+                      ? 'bg-white bg-opacity-20'
+                      : 'hover:bg-white hover:bg-opacity-10'
+                    }
+                  `}>
+                    <button
+                      className={`
+                        flex-1 text-left p-2
+                        transition-all duration-300 ease-out
+                        ${currentSong.file === song.file
+                          ? 'text-white'
+                          : 'text-gray-400'
+                        }
+                      `}
+                      onClick={() => onSongChange(song)}
+                    >
+                      <div className="font-medium truncate flex items-center">
+                        <span className="mr-2 flex-shrink-0">{index + 1}.</span>
+                        <span className="truncate">{song.name}</span>
+                      </div>
+                      <div className="text-xs opacity-70 truncate pl-6">
+                        {song.artist}
+                      </div>
+                    </button>
+                    <div className="flex items-center pr-2 md:opacity-0 md:group-hover:opacity-100 transition-all duration-300 space-x-0.5">
+                      {song.link && (
+                        <a
+                          href={song.link}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className={`
+                            p-1.5 rounded-lg transition-all duration-300 transform
+                            hover:bg-white hover:bg-opacity-10 hover:scale-110 active:scale-95
+                            hover:text-white text-gray-400
+                          `}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            if (isPlaying) {
+                              onPlayToggle();
+                            }
+                          }}
+                        >
+                          <ExternalLink 
+                            size={16} 
+                            className="transition-colors duration-300" 
+                          />
+                        </a>
+                      )}
+                      <button
+                        className={`p-1.5 rounded-lg transition-all duration-300 transform
+                          ${index === 0 
+                            ? 'opacity-50 cursor-not-allowed text-gray-600' 
+                            : 'hover:bg-white hover:bg-opacity-10 hover:scale-110 active:scale-95 hover:text-white text-gray-400'
+                          }`}
+                        onClick={() => {
+                          if (index > 0) {
+                            const targetIndex = index - 1;
+                            const element = document.querySelector(`[data-index="${targetIndex}"]`);
+                            element?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                            handleMoveItem(index, targetIndex);
+                          }
+                        }}
+                        disabled={index === 0}
+                      >
+                        <ChevronUp 
+                          size={16} 
+                          className="transition-colors duration-300"
+                        />
+                      </button>
+                      <button
+                        className={`p-1.5 rounded-lg transition-all duration-300 transform
+                          ${index === playlist.length - 1 
+                            ? 'opacity-50 cursor-not-allowed text-gray-600' 
+                            : 'hover:bg-white hover:bg-opacity-10 hover:scale-110 active:scale-95 hover:text-white text-gray-400'
+                          }`}
+                        onClick={() => {
+                          if (index < playlist.length - 1) {
+                            const targetIndex = index + 1;
+                            const element = document.querySelector(`[data-index="${targetIndex}"]`);
+                            element?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                            handleMoveItem(index, targetIndex);
+                          }
+                        }}
+                        disabled={index === playlist.length - 1}
+                      >
+                        <ChevronDown 
+                          size={16} 
+                          className="transition-colors duration-300"
+                        />
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
 

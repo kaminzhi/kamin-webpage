@@ -28,6 +28,10 @@ module.exports = {
           '0%': { opacity: '1', transform: 'translateY(0)' },
           '100%': { opacity: '0', transform: 'translateY(-20px)' }
         },
+        marquee: {
+          '0%': { transform: 'translateX(0)' },
+          '100%': { transform: 'translateX(-100%)' }
+        },
         'needle-down': {
           '0%': { transform: 'rotate(-100deg)' },
           '30%': { transform: 'rotate(-15deg)' },
@@ -47,6 +51,10 @@ module.exports = {
         'hint-bounce': {
           '0%, 100%': { transform: 'translateY(0)' },
           '50%': { transform: 'translateY(-4px)' }
+        },
+        'mode-rotate': {
+          '0%': { transform: 'rotate(0deg)' },
+          '100%': { transform: 'rotate(360deg)' }
         }
       },
       animation: {
@@ -58,6 +66,8 @@ module.exports = {
         'spin-slow': 'spin 8s linear infinite',
         'bounce-slow': 'bounce-slow 2s ease-in-out infinite',
         'hint-bounce': 'hint-bounce 2s ease-in-out infinite',
+        'mode-rotate': 'mode-rotate 0.3s ease-out',
+        'marquee': 'marquee 10s linear infinite'
       }
     }
   },
