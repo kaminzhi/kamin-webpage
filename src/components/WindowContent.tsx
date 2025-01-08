@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { Mail, Github, Linkedin, Instagram, Twitter, Facebook, Music } from 'lucide-react';
 import { FaDiscord, FaTelegram } from 'react-icons/fa';
 import { iframeConfig } from '@/config/iframe';
+import { projects } from '@/config/projects';
 
 interface WindowContentProps {
   type: string;
@@ -169,59 +170,90 @@ const WindowContent: React.FC<WindowContentProps> = ({ type }) => {
     case 'projects':
       return (
         <div className="p-6 space-y-6 animate-fadeIn">
-          {[
-            { 
-              title: "Minecraft-Server-status", 
-              desc: "A Minecraft Server Status Write in Rust", 
-              tech: ["Rust"],
-              link: "https://github.com/kaminzhi/minecraft-server-status",
-              image: "https://www.esports.net/wp-content/uploads/2024/11/minecraft-server-status.webp"
-            },
-            { 
-              title: "kaminzhi.github.io", 
-              desc: "My Website", 
-              tech: ["Next.js", "TypeScript"],
-              link: "https://github.com/kaminzhi/kaminzhi.github.io",
-              image: "https://images.ctfassets.net/23aumh6u8s0i/6pjUKboBuFLvCKkE3esaFA/5f2101d6d2add5c615db5e98a553fc44/nextjs.jpeg"
-            },
-            { 
-              title: "Dotfile", 
-              desc: "My Dev Config", 
-              tech: ["shell", "lua", "tmux", "neovim", "fish"],
-              link: "https://github.com/kaminzhi/dotfile",
-              image: "https://github.com/kaminzhi/dotfile/raw/main/.images/screenshot.png"
-            }
-          ].map((project, index) => (
+          {projects.map((project, index) => (
             <a 
               href={project.link}
               target="_blank"
               rel="noopener noreferrer"
               key={index} 
-              className="block group bg-gray-50 bg-opacity-50 backdrop-blur-sm p-6 rounded-lg hover:shadow-xl transition-all cursor-pointer hover:-translate-y-1 duration-300"
+              className="block group bg-gray-50 bg-opacity-50 backdrop-blur-sm p-6 rounded-lg 
+                hover:shadow-xl transition-all cursor-pointer 
+                hover:-translate-y-1 duration-300
+                active:scale-95 active:shadow-md
+                hover:bg-gray-100 hover:bg-opacity-60"
             >
               <div className="h-48 rounded-lg mb-4 overflow-hidden">
                 {project.image ? (
                   <img 
                     src={project.image} 
                     alt={project.title}
-                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                    className="w-full h-full object-cover transition-transform duration-500 
+                      group-hover:scale-110 group-hover:rotate-1"
                     onError={(e) => {
                       e.currentTarget.parentElement?.classList.add('bg-gradient-to-r', 'from-blue-500', 'to-purple-600');
                       e.currentTarget.style.display = 'none';
                     }}
                   />
                 ) : (
-                  <div className="w-full h-full bg-gradient-to-r from-blue-500 to-purple-600 group-hover:opacity-90 transition-all duration-500 group-hover:scale-110" />
+                  <div className="w-full h-full bg-gradient-to-r from-blue-500 to-purple-600 
+                    group-hover:opacity-90 transition-all duration-500 
+                    group-hover:scale-110 group-hover:rotate-1" />
                 )}
               </div>
-              <h3 className="font-semibold mb-2 text-xl text-black">{project.title}</h3>
-              <p className="text-gray-600 mb-4">{project.desc}</p>
-              <div className="flex flex-wrap gap-2">
-                {project.tech.map((tech, i) => (
-                  <span key={i} className="px-3 py-1 bg-blue-200 text-gray-700 rounded-full text-sm">
-                    {tech}
-                  </span>
-                ))}
+              <div className="flex justify-between mb-4">
+                <div>
+                  <h3 className="font-semibold text-xl text-black mb-2">{project.title}</h3>
+                  <p className="text-gray-600">{project.desc}</p>
+                </div>
+                <div className="flex items-start ml-4">
+                  <img 
+                    src={project.author.avatar}
+                    alt={project.author.name}
+                    className="w-16 h-16 rounded-full border-2 border-gray-200 
+                      hover:scale-110 transition-transform duration-200
+                      hover:border-blue-400 shadow-md
+                      hover:shadow-lg"
+                  />
+                </div>
+              </div>
+              <div className="flex justify-between items-end">
+                <div className="flex flex-wrap gap-2">
+                  {project.tech.map((tech, i) => (
+                    <span key={i} className="px-3 py-1 bg-blue-200 text-gray-700 rounded-full text-sm
+                      hover:bg-blue-300 hover:-translate-y-1 hover:scale-105
+                      transition-all duration-200 cursor-pointer">
+                      {tech}
+                    </span>
+                  ))}
+                </div>
+                {project.languages && (
+                  <div className="flex flex-col items-end">
+                    <div className="flex h-2 overflow-hidden rounded-full bg-gray-200 w-64">
+                      {project.languages.map((lang, i) => (
+                        <div
+                          key={i}
+                          className="h-full transition-all duration-300"
+                          style={{
+                            width: `${lang.percentage}%`,
+                            backgroundColor: lang.color || '#666'
+                          }}
+                        />
+                      ))}
+                    </div>
+                    <div className="mt-2 flex flex-wrap gap-x-4 text-sm text-gray-600 justify-end">
+                      {project.languages.map((lang, i) => (
+                        <div key={i} className="flex items-center gap-1">
+                          <span
+                            className="w-2 h-2 rounded-full"
+                            style={{ backgroundColor: lang.color || '#666' }}
+                          />
+                          <span>{lang.name}</span>
+                          <span>{lang.percentage.toFixed(1)}%</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
             </a>
           ))}
