@@ -335,7 +335,7 @@ const Terminal: React.FC<TerminalProps> = ({ isActive, onClose }) => {
               term.writeln('total ' + Object.keys(dir).length);
               Object.entries(dir).forEach(([name, item]: [string, any]) => {
                 const type = item.type === 'dir' ? 'd' : '-';
-                const perms = getPermissionString(item.mode || 0o644); // 如果没有设置权限，默认使用 644
+                const perms = getPermissionString(item.mode || 0o644); // default 644
                 const date = new Date().toLocaleString('en-US', { month: 'short', day: '2-digit', hour: '2-digit', minute: '2-digit' });
                 term.writeln(`${type}${perms} 1 user group 4096 ${date} \x1b[${item.type === 'dir' ? '1;34' : '0;37'}m${name}\x1b[0m`);
               });
@@ -722,7 +722,7 @@ const Terminal: React.FC<TerminalProps> = ({ isActive, onClose }) => {
             break;
 
           case 'help':
-            term.writeln('\x1b[1;33m=== File Operations ===\x1b[0m');
+            term.writeln('\x1b[1;34m=== File Operations ===\x1b[0m');
             term.writeln('\x1b[1;36mls, ll, ls-l\x1b[0m    List directory contents');
             term.writeln('\x1b[1;36mcd\x1b[0m <dir>        Change directory');
             term.writeln('\x1b[1;36mcat\x1b[0m <file>      Show file contents');
@@ -731,7 +731,7 @@ const Terminal: React.FC<TerminalProps> = ({ isActive, onClose }) => {
             term.writeln('\x1b[1;36mpwd\x1b[0m             Print working directory');
             term.write('\r\n');
 
-            term.writeln('\x1b[1;33m=== File Management ===\x1b[0m');
+            term.writeln('\x1b[1;34m=== File Management ===\x1b[0m');
             term.writeln('\x1b[1;36mtouch\x1b[0m <file>    Create an empty file');
             term.writeln('\x1b[1;36mmkdir\x1b[0m <dir>     Create a directory');
             term.writeln('\x1b[1;36mcp\x1b[0m <src> <dst>  Copy files or directories');
@@ -740,30 +740,32 @@ const Terminal: React.FC<TerminalProps> = ({ isActive, onClose }) => {
             term.writeln('\x1b[1;36mchmod\x1b[0m <mode>    Change file mode bits');
             term.write('\r\n');
 
-            term.writeln('\x1b[1;33m=== System Information ===\x1b[0m');
+            term.writeln('\x1b[1;34m=== System Information ===\x1b[0m');
             term.writeln('\x1b[1;36mdatetime\x1b[0m        Display current date and time');
             term.writeln('\x1b[1;36mip addr\x1b[0m         Show network addresses');
             term.writeln('\x1b[1;36mneofetch\x1b[0m        System information');
             term.writeln('\x1b[1;36mwhoami\x1b[0m          Print current user name');
             term.write('\r\n');
 
-            term.writeln('\x1b[1;33m=== Network Tools ===\x1b[0m');
+            term.writeln('\x1b[1;34m=== Network Tools ===\x1b[0m');
             term.writeln('\x1b[1;36mping\x1b[0m [-t] <host> Send ICMP ECHO_REQUEST to network hosts');
             term.write('\r\n');
 
-            term.writeln('\x1b[1;33m=== Utilities ===\x1b[0m');
+            term.writeln('\x1b[1;34m=== Utilities ===\x1b[0m');
             term.writeln('\x1b[1;36mdecode\x1b[0m <string>  Decode base64 string');
+            term.writeln('\x1b[1;36mclear\x1b[0m           Clear the terminal screen');
             term.write('\r\n');
 
-            term.writeln('\x1b[1;33m=== Terminal Control ===\x1b[0m');
+            term.writeln('\x1b[1;34m=== Terminal Control ===\x1b[0m');
             term.writeln('\x1b[1;36mexit\x1b[0m            Exit the terminal');
             term.writeln('\x1b[1;36mhelp\x1b[0m            Show this help message');
             term.write('\r\n');
 
-            term.writeln('\x1b[1;33m=== Keyboard Shortcuts ===\x1b[0m');
-            term.writeln('\x1b[1;37mCtrl+C\x1b[0m          Interrupt current command');
-            term.writeln('\x1b[1;37mTab\x1b[0m             Auto-complete commands and paths');
-            term.writeln('\x1b[1;37m↑/↓\x1b[0m             Navigate command history');
+            term.writeln('\x1b[1;34m=== Keyboard Shortcuts ===\x1b[0m');
+            term.writeln('\x1b[1;36mCtrl+C\x1b[0m          Interrupt current command');
+            term.writeln('\x1b[1;36mCtrl+L\x1b[0m          Clear the screen');
+            term.writeln('\x1b[1;36mTab\x1b[0m             Auto-complete commands and paths');
+            term.writeln('\x1b[1;36m↑/↓\x1b[0m             Navigate command history');
             break;
 
           case 'decode':
@@ -778,6 +780,10 @@ const Terminal: React.FC<TerminalProps> = ({ isActive, onClose }) => {
             } catch (e) {
               term.writeln('decode: invalid base64 string');
             }
+            break;
+
+          case 'clear':
+            term.write('\x1B[2J\x1B[H'); // clear screen and move cursor to top
             break;
 
           case '':
@@ -796,17 +802,34 @@ const Terminal: React.FC<TerminalProps> = ({ isActive, onClose }) => {
       }
 
       function writePrompt(term: any) {
-        if (vimMode) return; //vim mode
+        if (vimMode) return;
         const cwd = getFullPath();
-        term.write('\x1b[1;32mMGconch@k-conch\x1b[0m'); // user@host
-        term.write('\x1b[1;37m:\x1b[0m'); 
-        term.write('\x1b[1;34m' + cwd + '\x1b[0m');
-        term.write(' ');
-        term.write('\x1b[1;37m$\x1b[0m ');
+        
+
+        const now = new Date();
+        const time = now.toLocaleTimeString('en-US', { 
+          hour12: false,
+          hour: '2-digit',
+          minute: '2-digit',
+          second: '2-digit'
+        });
+
+        term.write('\x1b[38;5;239m╭─\x1b[0m');
+        term.write('\x1b[38;5;239m[\x1b[0m');
+        term.write('\x1b[1;37m' + time + '\x1b[0m');
+        term.write('\x1b[38;5;239m]\x1b[0m');
+        term.write(' \x1b[1;32mMGconch\x1b[0m');
+        term.write('\x1b[38;5;239m@\x1b[0m');
+        term.write('\x1b[1;32mk-conch\x1b[0m');
+        term.write(' \x1b[1;34m' + cwd + '\x1b[0m');
+        term.write('\r\n');
+        
+        term.write('\x1b[38;5;239m╰─\x1b[0m');
+        term.write('\x1b[1;32m❯\x1b[0m ');
       }
 
       function getPromptLength() {
-        return 'MGconch@k-conch:'.length + getFullPath().length + 3; // +3 is : space $
+        return 2; // 只計算最後一行的 "❯ " 的長度
       }
 
       function getCompletions(input: string): string[] {
@@ -819,7 +842,7 @@ const Terminal: React.FC<TerminalProps> = ({ isActive, onClose }) => {
         const commands = [
           'ls', 'll', 'ls-l', 'cd', 'cat', 'vim', 'tree', 'datetime',
           'ip', 'neofetch', 'touch', 'pwd', 'whoami', 'mkdir', 'cp',
-          'rm', 'mv', 'chmod', 'exit', 'ping', 'help'
+          'rm', 'mv', 'chmod', 'exit', 'ping', 'help', 'clear'
         ];
 
         if (args.length === 1) {
@@ -1030,7 +1053,6 @@ const Terminal: React.FC<TerminalProps> = ({ isActive, onClose }) => {
             vimCursorPos.col = 0;
           } else if (input === 'Backspace') {
             // handle backspace key
-            const currentLine = vimContent[vimCursorPos.row] || '';
             if (vimCursorPos.col > 0) {
               // delete in the middle of the line
               vimContent[vimCursorPos.row] = currentLine.slice(0, vimCursorPos.col - 1) + currentLine.slice(vimCursorPos.col);
@@ -1043,6 +1065,7 @@ const Terminal: React.FC<TerminalProps> = ({ isActive, onClose }) => {
               vimCursorPos.row--;
               vimCursorPos.col = previousLine.length;
             }
+            return;
           } else if (input === 'ArrowLeft') {
             if (vimCursorPos.col > 0) {
               vimCursorPos.col--;
@@ -1103,11 +1126,12 @@ const Terminal: React.FC<TerminalProps> = ({ isActive, onClose }) => {
       }
 
       // display welcome message
+      term.write('\x1B[?7l'); // 禁用自动换行
       term.writeln('Looks like you found my secret place!');
       term.writeln('It is recommended to use PC to view this terminal');
       term.writeln('Type \x1b[1;32mhelp\x1b[0m for available commands.');
       term.writeln('');
-      term.write('\r\n');
+      term.write('\x1B[?7h'); // 重新启用自动换行
       writePrompt(term);
       term.write('\x1B[?25h'); // show cursor
 
@@ -1135,13 +1159,51 @@ const Terminal: React.FC<TerminalProps> = ({ isActive, onClose }) => {
           vimContent = [];
           vimCurrentFile = '';
           vimCommandBuffer = '';
-          isPinging = false; // reset ping execution state
+          isPinging = false;
           if (pingTimer) {
-            clearTimeout(pingTimer); // clear ping timer
+            clearTimeout(pingTimer);
             pingTimer = null;
           }
-          term.write('\x1B[2 q'); // reset to block cursor
+          term.write('\x1B[2 q');
           writePrompt(term);
+          return;
+        }
+
+        // handle up and down key history
+        if (!vimMode && domEvent.keyCode === 38) { // Up Arrow
+          if (historyIndex === commandHistory.length) {
+            savedCurrentLine = currentLine;
+          }
+          if (historyIndex > 0) {
+            historyIndex--;
+            currentLine = commandHistory[historyIndex];
+            cursorPosition = currentLine.length;
+            term.write('\x1b[1F');
+            term.write('\x1b[2K');
+            term.write('\r');
+            term.write('\x1b[1B');
+            term.write('\x1b[2K');
+            term.write('\r');
+            term.write('\x1b[1F');
+            writePrompt(term);
+            term.write(currentLine);
+          }
+          return;
+        } else if (!vimMode && domEvent.keyCode === 40) { // Down Arrow
+          if (historyIndex < commandHistory.length) {
+            historyIndex++;
+            currentLine = historyIndex === commandHistory.length ? savedCurrentLine : commandHistory[historyIndex];
+            cursorPosition = currentLine.length;
+            term.write('\x1b[1F');
+            term.write('\x1b[2K');
+            term.write('\r');
+            term.write('\x1b[1B');
+            term.write('\x1b[2K');
+            term.write('\r');
+            term.write('\x1b[1F');
+            writePrompt(term);
+            term.write(currentLine);
+          }
           return;
         }
 
@@ -1178,7 +1240,6 @@ const Terminal: React.FC<TerminalProps> = ({ isActive, onClose }) => {
           domEvent.preventDefault();
           const completions = getCompletions(currentLine);
           if (completions.length === 1) {
-            // if there is only one match, complete directly
             const args = currentLine.split(' ');
             const lastArg = args[args.length - 1];
             const completion = completions[0].slice(lastArg.length);
@@ -1186,7 +1247,6 @@ const Terminal: React.FC<TerminalProps> = ({ isActive, onClose }) => {
             cursorPosition += completion.length;
             term.write(completion);
           } else if (completions.length > 1) {
-            // if there are multiple matches, display all possible completions
             term.write('\r\n');
             completions.forEach(item => {
               const dir = getCurrentDir();
@@ -1200,32 +1260,30 @@ const Terminal: React.FC<TerminalProps> = ({ isActive, onClose }) => {
           return;
         }
 
-        // handle left and right key movement
-        if (domEvent.keyCode === 37) { // Left Arrow
-          // ensure cursor is not before the prompt
-          const promptLength = getPromptLength();
-          if (cursorPosition > 0) {
-            cursorPosition--;
-            term.write('\x1b[D'); // move cursor left
-          }
-          return;
-        } else if (domEvent.keyCode === 39) { // Right Arrow
-          if (cursorPosition < currentLine.length) {
-            cursorPosition++;
-            term.write('\x1b[C'); // move cursor right
-          }
-          return;
-        }
-
         // handle backspace key
         if (domEvent.keyCode === 8) { // Backspace
           if (currentLine.length > 0 && cursorPosition > 0) {
             currentLine = currentLine.slice(0, cursorPosition - 1) + currentLine.slice(cursorPosition);
             cursorPosition--;
-            term.write('\x1B[2K\r');
-            writePrompt(term);
-            term.write(currentLine);
-            term.write(`\x1B[${cursorPosition + getPromptLength() + 1}G`);
+            term.write('\b');
+            term.write(currentLine.slice(cursorPosition));
+            term.write(' ');
+            term.write('\b'.repeat(currentLine.length - cursorPosition + 1));
+          }
+          return;
+        }
+
+        // handle left and right key movement
+        if (domEvent.keyCode === 37) { // Left Arrow
+          if (cursorPosition > 0) {
+            cursorPosition--;
+            term.write('\x1b[D');
+          }
+          return;
+        } else if (domEvent.keyCode === 39) { // Right Arrow
+          if (cursorPosition < currentLine.length) {
+            cursorPosition++;
+            term.write('\x1b[C');
           }
           return;
         }
@@ -1234,45 +1292,22 @@ const Terminal: React.FC<TerminalProps> = ({ isActive, onClose }) => {
         if (printable && key.length === 1) {
           currentLine = currentLine.slice(0, cursorPosition) + key + currentLine.slice(cursorPosition);
           cursorPosition++;
-          term.write('\x1B[2K\r'); // clear current line
-          writePrompt(term);
-          term.write(currentLine);
-          term.write(`\x1B[${cursorPosition + getPromptLength() + 1}G`);
+          term.write(key);
+          if (cursorPosition < currentLine.length) {
+            term.write(currentLine.slice(cursorPosition)); // 寫入後面的內容
+            term.write('\b'.repeat(currentLine.length - cursorPosition)); // 移回光標
+          }
         }
 
         // handle Enter key
         if (domEvent.keyCode === 13) { // Enter
-          cursorPosition = 0;
           term.write('\r\n');
           handleCommand(currentLine.trim(), term);
+          if (!vimMode) {
+            writePrompt(term);
+          }
           currentLine = '';
-          writePrompt(term);
-          return;
-        }
-
-        // handle up and down key history
-        if (domEvent.keyCode === 38) { // Up Arrow
-          if (historyIndex === commandHistory.length) {
-            savedCurrentLine = currentLine;
-          }
-          if (historyIndex > 0) {
-            historyIndex--;
-            currentLine = commandHistory[historyIndex];
-            cursorPosition = currentLine.length;
-            term.write('\x1B[2K\r'); // clear current line
-            writePrompt(term);
-            term.write(currentLine);
-          }
-          return;
-        } else if (domEvent.keyCode === 40) { // Down Arrow
-          if (historyIndex < commandHistory.length) {
-            historyIndex++;
-            currentLine = historyIndex === commandHistory.length ? savedCurrentLine : commandHistory[historyIndex];
-            cursorPosition = currentLine.length;
-            term.write('\x1B[2K\r'); // clear current line
-            writePrompt(term);
-            term.write(currentLine);
-          }
+          cursorPosition = 0;
           return;
         }
 
@@ -1281,7 +1316,7 @@ const Terminal: React.FC<TerminalProps> = ({ isActive, onClose }) => {
           term.write('\x1B[2J\x1B[H'); // clear screen and move cursor to top
           writePrompt(term);
           term.write(currentLine);
-          term.write(`\x1B[${cursorPosition + getPromptLength() + 1}G`); // restore cursor position
+          term.write(`\x1B[${cursorPosition + getPromptLength() + 1}G`);
           return;
         }
       });
