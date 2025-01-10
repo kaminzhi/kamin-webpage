@@ -1,5 +1,5 @@
-import React from 'react';
-import { Battery, Clock } from 'lucide-react';
+import React, { useState } from 'react';
+import { Battery, Clock, ChevronDown } from 'lucide-react';
 
 interface BatteryPanelProps {
   isOpen: boolean;
@@ -34,6 +34,9 @@ const BatteryIcon = () => (
 );
 
 const BatteryPanel: React.FC<BatteryPanelProps> = ({ isOpen }) => {
+  const [isUptimeExpanded, setIsUptimeExpanded] = useState(false);
+  const [copyFeedback, setCopyFeedback] = useState('');
+
   // 從環境變量獲取部署時間
   const deploymentTime = process.env.DEPLOYMENT_TIME 
     ? new Date(process.env.DEPLOYMENT_TIME).getTime()
@@ -49,10 +52,11 @@ const BatteryPanel: React.FC<BatteryPanelProps> = ({ isOpen }) => {
   const deploymentDate = new Date(deploymentTime);
   const formattedDeploymentDate = `${deploymentDate.getFullYear()}/${deploymentDate.getMonth() + 1}/${deploymentDate.getDate()} ${deploymentDate.getHours().toString().padStart(2, '0')}:${deploymentDate.getMinutes().toString().padStart(2, '0')}`;
 
+  const Text = "dXNlcjpNYWdpY0NvbmNoLHBhc3N3b3JkOmxvb2tzbGlrZXlvdWZvdW5kdGhpcw==";
+
   return (
     <div 
-      className={`
-        absolute top-14 right-4 w-80
+      className={`        absolute top-14 right-4 w-80
         bg-black bg-opacity-80 backdrop-blur-md rounded-lg shadow-xl
         transition-all duration-300 transform origin-top-right
         ${isOpen ? 'scale-100 opacity-100' : 'scale-95 opacity-0 pointer-events-none'}
@@ -86,14 +90,57 @@ const BatteryPanel: React.FC<BatteryPanelProps> = ({ isOpen }) => {
             </div>
           </div>
 
-          <div className="bg-white bg-opacity-10 p-4 rounded-lg">
-            <div className="flex items-center space-x-3">
-              <Clock size={24} className="text-white" />
-              <div>
-                <div className="text-white font-medium">系統運行時間</div>
-                <div className="text-gray-400 text-sm flex flex-col gap-1">
-                  <div>更新部屬於 {formattedDeploymentDate}</div>
-                  <div>更新後已運行 {days}天 {hours}小時 {minutes}分鐘</div>
+          <div className="bg-white bg-opacity-10 rounded-lg overflow-hidden">
+            <button 
+              onClick={() => setIsUptimeExpanded(!isUptimeExpanded)}
+              className="w-full p-4 flex items-center justify-between hover:bg-white hover:bg-opacity-5 transition-colors"
+            >
+              <div className="flex items-center space-x-3">
+                <Clock size={24} className="text-white" />
+                <div>
+                  <div className="text-white font-medium text-left">系統運行時間</div>
+                  <div className="text-gray-400 text-sm">
+                    {days}天 {hours}小時 {minutes}分鐘
+                  </div>
+                </div>
+              </div>
+              <ChevronDown 
+                size={20} 
+                className={`text-white transition-transform duration-300 
+                  ${isUptimeExpanded ? 'rotate-180' : ''}`}
+              />
+            </button>
+            
+            <div className={`
+              overflow-hidden transition-all duration-300 ease-in-out
+              ${isUptimeExpanded ? 'max-h-40 opacity-100' : 'max-h-0 opacity-0'}
+            `}>
+              <div className="p-4 pt-0 space-y-2 border-t border-white border-opacity-10">
+                <div className="flex justify-between text-sm">
+                  <span className="text-gray-400">最後更新部署</span>
+                  <span className="text-white">{formattedDeploymentDate}</span>
+                </div>
+                <div className="flex justify-between text-sm">
+                  <span className="text-gray-400">總運行時間</span>
+                  <span className="text-white">{uptimeInMinutes.toLocaleString()} 分鐘</span>
+                </div>
+                <div className="flex justify-between text-sm">
+                  <span className="text-gray-400">系統狀態</span>
+                  <span className="text-green-400">正常運行中</span>
+                </div>
+                <div className="flex flex-col text-sm">
+                  <button 
+                    className="text-white text-xs text-center overflow-hidden whitespace-nowrap bg-transparent border-none cursor-pointer relative transition duration-200 ease-in-out hover:bg-gray-700 rounded-md p-2 ml-2"
+                    style={{ maxWidth: 'calc(100% - 16px)', textOverflow: 'ellipsis', display: 'inline-block' }}
+                    onClick={() => {
+                      navigator.clipboard.writeText(Text);
+                      setCopyFeedback('已複製(亂中階有序)');
+                      setTimeout(() => setCopyFeedback(''), 2000);
+                    }}
+                  >
+                    {Text}
+                  </button>
+                  {copyFeedback && <span className="text-green-400 text-xs mt-1 text-right">{copyFeedback}</span>}
                 </div>
               </div>
             </div>

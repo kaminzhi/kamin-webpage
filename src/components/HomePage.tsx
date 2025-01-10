@@ -3,23 +3,28 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import StatusBar from './StatusBar';
 import WindowPane from './WindowPane';
-import TaskbarButton from './TaskbarButton';
+import TaskbarButton from '@/components/TaskbarButton';
 import { WindowState } from '../../types';
 import Background from './Background';
 import { viewConfig } from '@/config/view';
 
 const HomePage: React.FC = () => {
   const [isLoaded, setIsLoaded] = useState(false);
+  const [isVpnConnected, setIsVpnConnected] = useState(false);
   const [windows, setWindows] = useState<Record<string, WindowState>>({
     about: { isOpen: false, isActive: false },
     projects: { isOpen: false, isActive: false },
     contact: { isOpen: false, isActive: false },
     blog: { isOpen: false, isActive: false },
+    terminal: { isOpen: false, isActive: false },
   });
   const [showBlogHint, setShowBlogHint] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const [isHintVisible, setIsHintVisible] = useState(true);
   const [hintAnimationDone, setHintAnimationDone] = useState(false);
+  const [containerRef, setContainerRef] = useState<HTMLDivElement | null>(null);
+  const [initialWidth, setInitialWidth] = useState<number>(0);
+  const [finalWidth, setFinalWidth] = useState<number>(0);
 
   // 檢查視窗是否關閉
   const allWindowsClosed = useMemo(() => {
@@ -66,6 +71,37 @@ const HomePage: React.FC = () => {
 
     return () => clearTimeout(timer);
   }, []);
+
+  useEffect(() => {
+    if (containerRef) {
+      const updateWidths = () => {
+        requestAnimationFrame(() => {
+          const buttons = containerRef.querySelectorAll('button');
+          let totalWidth = 0;
+          buttons.forEach(button => {
+            if (!button.classList.contains('animate-slide-up-fade')) {
+              totalWidth += button.offsetWidth;
+            }
+          });
+          
+          const buttonGap = 8; // 0.5rem = 8px
+          const containerPadding = 20; // px-3 = 0.75rem * 2 = 24px
+          const containerLeftPadding = 8; // pl-2 = 0.5rem = 8px
+          const isMobileView = window.innerWidth < 768;
+          const terminalButtonWidth = isMobileView ? 82 : 96;
+          
+          const baseWidth = totalWidth + ((buttons.length - 1) * buttonGap) + containerPadding + containerLeftPadding;
+          setInitialWidth(baseWidth);
+          
+          setFinalWidth(baseWidth + terminalButtonWidth);
+        });
+      };
+      
+      updateWidths();
+      window.addEventListener('resize', updateWidths);
+      return () => window.removeEventListener('resize', updateWidths);
+    }
+  }, [containerRef, isVpnConnected]);
 
   const handleWindowClick = (window: string) => {
     setWindows(prev => {
@@ -190,6 +226,7 @@ const HomePage: React.FC = () => {
         onBlogClick={() => handleWindowClick('blog')} 
         currentWindow={Object.entries(windows).find(([_, win]) => win.isActive)?.[0]}
         isBlogOpen={windows.blog.isOpen}
+        onVpnConnect={setIsVpnConnected}
       />
       {showBlogHint && (
         <div className={`
@@ -239,18 +276,56 @@ const HomePage: React.FC = () => {
           ) : null
         )}
       </div>
-      <div className="fixed bottom-4 left-1/2 -translate-x-1/2 inline-flex px-2 md:px-4 py-2 bg-black bg-opacity-80 backdrop-blur-md rounded-full items-center gap-1 md:gap-3 z-50 max-w-[95vw] overflow-x-auto">
-        {Object.entries(windows)
-          .filter(([key]) => key !== 'blog')
-          .map(([key, window]) => (
-            <TaskbarButton
-              key={key}
-              title={key.charAt(0).toUpperCase() + key.slice(1)}
-              isActive={window.isActive}
-              isOpen={window.isOpen}
-              onClick={() => handleWindowClick(key)}
-            />
-          ))}
+      <div 
+        ref={setContainerRef}
+        className={`
+          fixed bottom-4 left-1/2
+          inline-flex pl-3 pr-2 py-2 
+          bg-black bg-opacity-80 backdrop-blur-md rounded-full 
+          items-center z-50 
+          transition-all duration-500
+          ${isVpnConnected !== undefined ? (isVpnConnected ? 'animate-container-expand' : 'animate-container-shrink') : ''}
+        `}
+        style={{
+          transform: 'translateX(-50%)',
+          width: `${isVpnConnected ? finalWidth : initialWidth}px`,
+          '--terminal-width': isMobile ? '82px' : '96px'
+        } as React.CSSProperties}
+      >
+        <div className="flex items-center pl-2">
+          {Object.entries(windows)
+            .filter(([key]) => key !== 'blog')
+            .sort(([keyA], [keyB]) => {
+              if (keyA === 'terminal') return 1;
+              if (keyB === 'terminal') return -1;
+              return 0;
+            })
+            .map(([key, window]) => (
+              <TaskbarButton
+                key={key}
+                title={key.charAt(0).toUpperCase() + key.slice(1)}
+                isActive={window.isActive}
+                isOpen={window.isOpen}
+                onClick={() => handleWindowClick(key)}
+                className={
+                  key === 'terminal' 
+                    ? `${isVpnConnected !== undefined ? (isVpnConnected ? 'animate-slide-up-fade' : 'animate-slide-up-fade-reverse') : ''}`
+                    : 'mr-2'
+                }
+                style={
+                  key === 'terminal' && !isVpnConnected
+                    ? { 
+                        width: 0,
+                        opacity: 0,
+                        overflow: 'hidden',
+                        margin: 0,
+                        padding: 0
+                      }
+                    : undefined
+                }
+              />
+            ))}
+        </div>
       </div>
     </div>
   );

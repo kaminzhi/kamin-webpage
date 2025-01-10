@@ -1,11 +1,15 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { Wifi, Lock, AlertCircle } from 'lucide-react';
+import { Wifi, Lock, AlertCircle, Shield } from 'lucide-react';
 import { networksConfig } from '@/config/networks';
+import { VPN_CONFIG } from '@/config/vpn';
 
 interface WifiPanelProps {
   isOpen: boolean;
+  onVpnConnect?: (connected: boolean) => void;
+  currentWindow?: string;
+  onWindowChange?: (window: string | null) => void;
 }
 
 interface NetworkState {
@@ -112,15 +116,62 @@ const SignalBars = ({ strength, isActive = false }: { strength: number, isActive
   );
 };
 
-const WifiPanel: React.FC<WifiPanelProps> = ({ isOpen }) => {
+const WifiPanel: React.FC<WifiPanelProps> = ({ isOpen, onVpnConnect, currentWindow, onWindowChange }) => {
   const [isConnecting, setIsConnecting] = useState(false);
   const [showDisconnectError, setShowDisconnectError] = useState(false);
   const [showCurrentNetworkOptions, setShowCurrentNetworkOptions] = useState(false);
   const [isDisconnecting, setIsDisconnecting] = useState(false);
+  const [showAddNetwork, setShowAddNetwork] = useState(false);
+  const [newNetwork, setNewNetwork] = useState({ name: '', password: '' });
   const [networks, setNetworks] = useState<Record<string, NetworkState>>({
     'death': { showPasswordInput: false, password: '', showError: false },
     'unknown': { showPasswordInput: false, password: '', showError: false }
   });
+  const [connectionSuccess, setConnectionSuccess] = useState(false);
+  const [addNetworkSuccess, setAddNetworkSuccess] = useState(false);
+  const [addNetworkError, setAddNetworkError] = useState(false);
+  const [isAddNetworkConnecting, setIsAddNetworkConnecting] = useState(false);
+  const [vpnStatus, setVpnStatus] = useState<{
+    isConnected: boolean;
+    username: string;
+    remoteIP: string;
+    isDisconnecting?: boolean;
+  } | null>(null);
+
+  useEffect(() => {
+    if (addNetworkError || showDisconnectError) {
+      const timer = setTimeout(() => {
+        if (addNetworkError) setAddNetworkError(false);
+        if (showDisconnectError) setShowDisconnectError(false);
+      }, 2000);
+      return () => clearTimeout(timer);
+    }
+  }, [addNetworkError, showDisconnectError]);
+
+  useEffect(() => {
+    if (vpnStatus?.isDisconnecting) {
+      setNewNetwork({ name: '', password: '' });
+      
+      const timer = setTimeout(() => {
+        if (onVpnConnect) {
+          onVpnConnect(false);
+        }
+        if (currentWindow === 'terminal' && onWindowChange) {
+          onWindowChange(null);
+        }
+        setConnectionSuccess(false);
+        setAddNetworkSuccess(false);
+        setShowAddNetwork(false);
+        setVpnStatus(null);
+
+        const event = new CustomEvent('vpn-status-change', {
+          detail: { isConnected: false }
+        });
+        window.dispatchEvent(event);
+      }, 500);
+      return () => clearTimeout(timer);
+    }
+  }, [vpnStatus?.isDisconnecting, onVpnConnect, currentWindow, onWindowChange]);
 
   useEffect(() => {
     if (!isOpen) {
@@ -139,6 +190,12 @@ const WifiPanel: React.FC<WifiPanelProps> = ({ isOpen }) => {
       });
     }
   }, [isOpen]);
+
+  useEffect(() => {
+    if (connectionSuccess && onVpnConnect) {
+      onVpnConnect(true);
+    }
+  }, [connectionSuccess, onVpnConnect]);
 
   const handleConnect = (network: string) => (e: React.FormEvent) => {
     e.preventDefault();
@@ -209,9 +266,59 @@ const WifiPanel: React.FC<WifiPanelProps> = ({ isOpen }) => {
     setIsDisconnecting(true);
     setTimeout(() => {
       setIsDisconnecting(false);
+      setShowCurrentNetworkOptions(false);
       setShowDisconnectError(true);
-      setTimeout(() => setShowDisconnectError(false), 3000);
     }, 1000);
+  };
+
+  const verify = (n: string, p: string) => {
+    try {
+      const Multiple = (str: string) => {
+        let result = str;
+        while (result.endsWith('=')) {
+          result = atob(result);
+        }
+        return result;
+      };
+
+      const f1 = Multiple('bG9va3NsaWtleQ==');
+      const f2 = Multiple('TWFnaWNDb25jaA==');
+      const f3 = Multiple('b3Vmb3VuZHRoaXM=');      
+      
+      return n === f2 && p === f1 + f3 ;
+    } catch {
+      return false;
+    }
+  };
+
+  const handleNewNetworkSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsAddNetworkConnecting(true);
+    
+    setTimeout(() => {
+      const success = verify(newNetwork.name, newNetwork.password);
+      setIsAddNetworkConnecting(false);
+      
+      if (!success) {
+        setAddNetworkError(true);
+        setNewNetwork(prev => ({ ...prev, password: '' }));
+      } else {
+        setShowAddNetwork(false);
+        setNewNetwork({ name: '', password: '' });
+        setAddNetworkSuccess(true);
+        setConnectionSuccess(true);
+        setVpnStatus({
+          isConnected: true,
+          username: newNetwork.name,
+          remoteIP: VPN_CONFIG.remoteIP
+        });
+
+        const event = new CustomEvent('vpn-status-change', {
+          detail: { isConnected: true }
+        });
+        window.dispatchEvent(event);
+      }
+    }, 1500);
   };
 
   return (
@@ -226,9 +333,22 @@ const WifiPanel: React.FC<WifiPanelProps> = ({ isOpen }) => {
       <div className="p-4">
         <div className="flex items-center justify-between mb-4">
           <span className="text-white font-medium">Wi-Fi</span>
-          <div className="flex items-center space-x-2">
-            <span className="text-white text-sm">連線成功</span>
-            <div className="w-3 h-3 rounded-full bg-green-400"></div>
+          <div className="flex items-center space-x-3">
+            <div className={`
+              flex items-center space-x-2 transition-all duration-300 ease-in-out
+              ${connectionSuccess ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-2'}
+              ${connectionSuccess && !vpnStatus?.isDisconnecting && 'animate-fade-in-up'}
+            `}>
+              <div className="p-1 bg-purple-500 bg-opacity-20 rounded-lg">
+                <Shield size={14} className="text-purple-400" />
+              </div>
+              <span className="text-white text-sm">VPN 已連線</span>
+              <div className="w-2 h-2 rounded-full bg-purple-400 animate-pulse"></div>
+            </div>
+            <div className="flex items-center space-x-2">
+              <span className="text-white text-sm">連線成功</span>
+              <div className="w-2 h-2 rounded-full bg-green-400 animate-[pulse_2s_ease-in-out_infinite]"></div>
+            </div>
           </div>
         </div>
         
@@ -266,7 +386,7 @@ const WifiPanel: React.FC<WifiPanelProps> = ({ isOpen }) => {
               <SignalBars strength={networksConfig.magic.signalStrength} isActive={true} />
             </div>
             {showCurrentNetworkOptions && (
-              <div className="mt-3 flex justify-end">
+              <div className="mt-3 flex justify-end animate-fade-in-up">
                 <button
                   onClick={(e) => {
                     e.stopPropagation();
@@ -303,6 +423,118 @@ const WifiPanel: React.FC<WifiPanelProps> = ({ isOpen }) => {
               onPasswordChange={handlePasswordChange(networkKey)}
             />
           ))}
+
+          <div className="mt-2 border-t border-white border-opacity-10 pt-2"></div>
+
+          {vpnStatus && (
+            <div className={`
+              bg-white bg-opacity-10 p-3 rounded-lg -mt-1 
+              ${vpnStatus.isDisconnecting 
+                ? 'animate-fade-out-down' 
+                : 'animate-fade-in-up'
+              }
+            `}>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center">
+                  <div className="p-1 bg-purple-500 bg-opacity-20 rounded-lg -ml-1">
+                    <Shield size={16} className="text-purple-400" />
+                  </div>
+                  <div className="ml-3">
+                    <div className="text-white font-medium">VPN 已連線</div>
+                    <div className="flex flex-col text-sm">
+                      <span className="text-gray-400">使用者：{vpnStatus.username}</span>
+                      <span className="text-gray-400">遠端 IP：{vpnStatus.remoteIP}</span>
+                    </div>
+                  </div>
+                </div>
+                <button
+                  onClick={() => {
+                    if (currentWindow === 'terminal' && onWindowChange) {
+                      onWindowChange(null);
+                    }
+                    setVpnStatus(prev => prev ? { ...prev, isDisconnecting: true } : null);
+                  }}
+                  disabled={vpnStatus.isDisconnecting}
+                  className={`
+                    px-3 py-1.5 bg-red-500 hover:bg-red-600 
+                    text-white text-sm rounded-md transition-all
+                    ${vpnStatus.isDisconnecting ? 'opacity-50 cursor-not-allowed' : ''}
+                  `}
+                >
+                  {vpnStatus.isDisconnecting ? '中斷中...' : '中斷連線'}
+                </button>
+              </div>
+            </div>
+          )}
+
+          <div className="mt-4">
+            {!vpnStatus?.isConnected && (
+              <div className="flex items-center justify-between mb-2">
+                <button
+                  onClick={() => setShowAddNetwork(!showAddNetwork)}
+                  className="w-full bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-md 
+                    transition-all duration-200 flex items-center justify-center space-x-2"
+                >
+                  <span className="text-sm font-medium">新增 VPN</span>
+                </button>
+                {addNetworkSuccess && (
+                  <div className="flex items-center ml-2">
+                    <div className="w-2 h-2 rounded-full bg-purple-400 animate-pulse"></div>
+                  </div>
+                )}
+              </div>
+            )}
+
+            <div className={`
+              overflow-hidden transition-all duration-300 ease-in-out
+              ${showAddNetwork ? 'max-h-[200px] opacity-100 mt-3' : 'max-h-0 opacity-0'}
+            `}>
+              <form 
+                onSubmit={handleNewNetworkSubmit}
+                className="space-y-3 bg-black bg-opacity-25 p-3 rounded-lg"
+                onClick={e => e.stopPropagation()}
+              >
+                <div>
+                  <input
+                    type="text"
+                    value={newNetwork.name}
+                    onChange={e => setNewNetwork(prev => ({ ...prev, name: e.target.value }))}
+                    placeholder="使用者名稱"
+                    className="w-full bg-black bg-opacity-50 text-white px-3 py-2 rounded-md 
+                      placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500
+                      text-sm"
+                  />
+                </div>
+                <div>
+                  <input
+                    type="password"
+                    value={newNetwork.password}
+                    onChange={e => setNewNetwork(prev => ({ ...prev, password: e.target.value }))}
+                    placeholder="密碼"
+                    className="w-full bg-black bg-opacity-50 text-white px-3 py-2 rounded-md 
+                      placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500
+                      text-sm"
+                  />
+                </div>
+                <button
+                  type="submit"
+                  disabled={isAddNetworkConnecting || !newNetwork.name}
+                  className={`w-full py-2 rounded-md text-sm font-medium transition-all
+                    ${isAddNetworkConnecting || !newNetwork.name
+                      ? 'bg-blue-500 bg-opacity-50 text-gray-300 cursor-not-allowed' 
+                      : 'bg-blue-500 hover:bg-blue-600 text-white'}`}
+                >
+                  {isAddNetworkConnecting ? '連線中...' : '連線'}
+                </button>
+                {addNetworkError && (
+                  <div className="mt-2 text-red-500 text-sm flex items-center">
+                    <AlertCircle size={14} className="mr-1" />
+                    連線失敗，請檢查使用者名稱和密碼
+                  </div>
+                )}
+              </form>
+            </div>
+          </div>
         </div>
       </div>
     </div>

@@ -7,14 +7,16 @@ import WifiPanel from './WifiPanel';
 import VolumePanel from './VolumePanel';
 import BatteryPanel from './BatteryPanel';
 import { playlist, defaultSong } from '@/config/music';
-import TaskbarButton from './TaskbarButton';
+import TaskbarButton from '@/components/TaskbarButton';
 import { iframeConfig } from '@/config/iframe';
 
 interface StatusBarProps {
   allWindowsClosed: boolean;
   onBlogClick: () => void;
   currentWindow?: string;
-  isBlogOpen?: boolean;
+  isBlogOpen: boolean;
+  onVpnConnect?: (connected: boolean) => void;
+  onWindowChange?: (window: string | null) => void;
 }
 
 const StatusBarBatteryIcon = () => (
@@ -49,7 +51,9 @@ const StatusBar: React.FC<StatusBarProps> = ({
   allWindowsClosed, 
   onBlogClick, 
   currentWindow,
-  isBlogOpen = false
+  isBlogOpen,
+  onVpnConnect,
+  onWindowChange
 }) => {
   const [isWifiPanelOpen, setIsWifiPanelOpen] = useState(false);
   const [isVolumePanelOpen, setIsVolumePanelOpen] = useState(false);
@@ -246,19 +250,24 @@ const StatusBar: React.FC<StatusBarProps> = ({
   };
 
   return (
-    <div className="fixed top-0 left-0 right-0 h-12 bg-black bg-opacity-80 backdrop-blur-md z-40 flex items-center px-2 md:px-4">
-      <div className="flex-1 flex items-center space-x-4">
+    <div className={`
+      fixed top-0 left-0 right-0 h-12 
+      bg-black bg-opacity-80 backdrop-blur-md
+      flex items-center justify-between px-4 
+      z-40
+      transition-all duration-500
+      ${allWindowsClosed ? 'translate-y-0' : ''}
+    `}>
+      <div className="flex items-center space-x-2">
         <TaskbarButton
           title={iframeConfig.blog.title}
           isActive={currentWindow === 'blog'}
           isOpen={isBlogOpen}
           onClick={onBlogClick}
         />
-      </div>
-      <div className="flex-1 flex justify-center pointer-events-none">
         <Clock allWindowsClosed={allWindowsClosed} />
       </div>
-      <div className="flex-1 flex items-center justify-end space-x-1 md:space-x-4">
+      <div className="flex items-center space-x-4">
         <div ref={volumeRef}>
           <button 
             onClick={() => setIsVolumePanelOpen(!isVolumePanelOpen)}
@@ -296,7 +305,12 @@ const StatusBar: React.FC<StatusBarProps> = ({
           >
             <Wifi size={20} className="text-white" />
           </button>
-          <WifiPanel isOpen={isWifiPanelOpen} />
+          <WifiPanel 
+            isOpen={isWifiPanelOpen} 
+            onVpnConnect={onVpnConnect} 
+            currentWindow={currentWindow}
+            onWindowChange={onWindowChange}
+          />
         </div>
         <div ref={batteryRef}>
           <button

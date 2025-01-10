@@ -17,12 +17,12 @@ const WindowPane: React.FC<WindowPaneProps> = ({
 
   useEffect(() => {
     const calculateSize = () => {
-      if (type === 'blog') {
+      if (type === 'blog' || type === 'terminal') {
         const vw = window.innerWidth;
         const vh = window.innerHeight;
 
         let width = vw;
-        let height = vh - 120;
+        let height = vh - 144;
 
         if (vw >= 768) {
           if (vw >= 1536) { // 2xl
@@ -34,7 +34,7 @@ const WindowPane: React.FC<WindowPaneProps> = ({
           } else {
             width = Math.floor(vw * 0.94);
           }
-          height = vh - 140;
+          height = vh - 144;
         }
         
         width = width - (width % 2);
@@ -51,26 +51,27 @@ const WindowPane: React.FC<WindowPaneProps> = ({
 
   return (
     <div
+      data-window-type={type}
       className={`
         bg-white bg-opacity-40 backdrop-blur-md rounded-lg shadow-xl overflow-hidden
         fixed 
-        ${type === 'blog' 
-          ? 'md:top-14 md:left-1/2 top-12 left-0'
-          : 'md:top-16 md:left-1/2 top-12 left-0'
+        ${type === 'blog' || type === 'terminal'
+          ? 'md:top-14 md:left-1/2 top-14 left-0'
+          : 'md:top-14 md:left-1/2 top-14 left-0'
         }
         transition-all duration-500 ease-in-out
-        ${type === 'blog' ? '' : 'w-full md:max-w-4xl'}
+        ${type === 'blog' || type === 'terminal' ? '' : 'w-full md:max-w-4xl'}
         ${isActive 
           ? 'opacity-100 z-30 md:-translate-x-1/2 translate-y-0' 
           : 'opacity-0 z-20 pointer-events-none md:-translate-x-1/2 translate-y-[60vh]'}
-        mb-16
-        ${type === 'blog' ? '' : 'h-[calc(100vh-8rem)] md:h-[calc(100vh-9rem)]'}
+        mb-24
+        ${type === 'blog' || type === 'terminal' ? '' : 'h-[calc(100vh-8rem)] md:h-[calc(100vh-9rem)]'}
       `}
-      style={type === 'blog' && windowSize.width > 0 ? {
+      style={type === 'blog' || type === 'terminal' && windowSize.width > 0 ? {
         width: `${windowSize.width}px`,
         height: `${windowSize.height}px`
       } : {
-        width: type === 'blog' ? '100%' : undefined
+        width: type === 'blog' || type === 'terminal' ? '100%' : undefined
       }}
     >
       <div className="bg-gray-800 bg-opacity-80 backdrop-blur-sm p-3 flex items-center justify-between sticky top-0 z-10">
@@ -92,7 +93,7 @@ const WindowPane: React.FC<WindowPaneProps> = ({
         </div>
       </div>
       <div className="overflow-auto overscroll-contain h-[calc(100%-3rem)] window-content">
-        <WindowContent type={type} />
+        <WindowContent type={type} onClose={onClose} />
       </div>
     </div>
   );

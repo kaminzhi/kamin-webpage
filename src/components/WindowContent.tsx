@@ -5,13 +5,36 @@ import { Mail, Github, Linkedin, Instagram, Twitter, Facebook, Music } from 'luc
 import { FaDiscord, FaTelegram } from 'react-icons/fa';
 import { iframeConfig } from '@/config/iframe';
 import { projects } from '@/config/projects';
+import Terminal from './Terminal';
 
 interface WindowContentProps {
   type: string;
+  onClose?: () => void;
 }
 
-const WindowContent: React.FC<WindowContentProps> = ({ type }) => {
+const WindowContent: React.FC<WindowContentProps> = ({ type, onClose }) => {
   const [isPlaying, setIsPlaying] = useState(false);
+  const [isVpnConnected, setIsVpnConnected] = useState<boolean | undefined>(undefined);
+
+  useEffect(() => {
+    const handleVpnStatusChange = (event: CustomEvent) => {
+      const status = event.detail;
+      setIsVpnConnected(status.isConnected);
+      
+      // 当 VPN 断开连接且当前是终端窗口时，关闭窗口
+      if (!status.isConnected && type === 'terminal' && onClose) {
+        onClose();
+      }
+    };
+
+    // 监听 VPN 状态变化
+    window.addEventListener('vpn-status-change' as any, handleVpnStatusChange as any);
+
+    // 清理函数
+    return () => {
+      window.removeEventListener('vpn-status-change' as any, handleVpnStatusChange as any);
+    };
+  }, [type, onClose]);
 
   useEffect(() => {
     const audio = document.querySelector('audio');
@@ -375,6 +398,15 @@ const WindowContent: React.FC<WindowContentProps> = ({ type }) => {
             sandbox="allow-same-origin allow-scripts allow-popups allow-forms"
             referrerPolicy="no-referrer"
             scrolling="auto"
+          />
+        </div>
+      );
+    case 'terminal':
+      return (
+        <div className="h-full">
+          <Terminal 
+            isActive={true} 
+            onClose={onClose} 
           />
         </div>
       );

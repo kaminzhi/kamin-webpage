@@ -55,6 +55,131 @@ module.exports = {
         'mode-rotate': {
           '0%': { transform: 'rotate(0deg)' },
           '100%': { transform: 'rotate(360deg)' }
+        },
+        'slide-up-fade': {
+          '0%': {
+            opacity: '0',
+            transform: 'translateX(-10px)',
+            width: '0',
+            marginRight: '0'
+          },
+          '100%': {
+            opacity: '1',
+            transform: 'translateX(0)',
+            width: 'var(--terminal-width, 96px)',
+            marginRight: '0'
+          }
+        },
+        'slide-up-fade-reverse': {
+          '0%': {
+            opacity: '1',
+            transform: 'translateX(0)',
+            width: 'var(--terminal-width, 96px)',
+            marginRight: '0',
+            visibility: 'visible'
+          },
+          '50%': {
+            opacity: '0.5',
+            transform: 'translateX(-5px)',
+            width: 'calc(var(--terminal-width, 96px) / 2)',
+            marginRight: '0',
+            visibility: 'visible'
+          },
+          '99%': { 
+            opacity: '0',
+            transform: 'translateX(-10px)',
+            width: '0',
+            marginRight: '0',
+            visibility: 'visible'
+          },
+          '100%': {
+            opacity: '0',
+            transform: 'translateX(-10px)',
+            width: '0',
+            marginRight: '0',
+            visibility: 'hidden'
+          }
+        },
+        'container-expand': {
+          '0%': {
+            width: 'var(--initial-width)'
+          },
+          '100%': {
+            width: 'var(--final-width)'
+          }
+        },
+        'container-shrink': {
+          '0%': {
+            width: 'var(--final-width)'
+          },
+          '50%': {
+            width: 'calc(var(--final-width) - 46px)'
+          },
+          '100%': {
+            width: 'var(--initial-width)'
+          }
+        },
+        'slide-up-fade': {
+          '0%': {
+            transform: 'translateY(10px) scale(0.95)',
+            opacity: '0'
+          },
+          '100%': {
+            transform: 'translateY(0) scale(1)',
+            opacity: '1'
+          }
+        },
+        'fade-in': {
+          '0%': {
+            opacity: '0'
+          },
+          '100%': {
+            opacity: '1'
+          }
+        },
+        'fade-in-up': {
+          '0%': {
+            opacity: '0',
+            transform: 'translateY(5px)'
+          },
+          '100%': {
+            opacity: '1',
+            transform: 'translateY(0)'
+          }
+        },
+        'fade-out-down': {
+          '0%': {
+            opacity: '1',
+            transform: 'translateY(0)'
+          },
+          '100%': {
+            opacity: '0',
+            transform: 'translateY(10px)'
+          }
+        },
+        'slide-down': {
+          '0%': {
+            maxHeight: '0',
+            opacity: '0',
+            transform: 'translateY(-10px)'
+          },
+          '100%': {
+            maxHeight: '200px',
+            opacity: '1',
+            transform: 'translateY(0)'
+          }
+        },
+        'slide-up': {
+          '0%': {
+            maxHeight: '200px',
+            opacity: '1',
+            transform: 'translateY(0)'
+          },
+          '100%': {
+            maxHeight: '0',
+            opacity: '0',
+            transform: 'translateY(-10px)'
+          }
         }
       },
       animation: {
@@ -67,7 +192,16 @@ module.exports = {
         'bounce-slow': 'bounce-slow 2s ease-in-out infinite',
         'hint-bounce': 'hint-bounce 2s ease-in-out infinite',
         'mode-rotate': 'mode-rotate 0.3s ease-out',
-        'marquee': 'marquee 10s linear infinite'
+        'marquee': 'marquee 10s linear infinite',
+        'slide-up-fade': 'slide-up-fade 0.3s ease-out forwards',
+        'slide-up-fade-reverse': 'slide-up-fade-reverse 0.7s ease-in-out forwards',
+        'container-expand': 'container-expand 0.5s ease-out forwards',
+        'container-shrink': 'container-shrink 0.7s ease-in-out forwards',
+        'fade-in': 'fade-in 0.3s ease-out forwards',
+        'fade-in-up': 'fade-in-up 0.3s ease-out forwards',
+        'fade-out-down': 'fade-out-down 0.5s ease-in-out forwards',
+        'slide-down': 'slide-down 0.3s ease-out forwards',
+        'slide-up': 'slide-up 0.3s ease-out forwards'
       }
     }
   },
