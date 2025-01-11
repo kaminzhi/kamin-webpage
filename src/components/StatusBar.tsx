@@ -253,12 +253,12 @@ const StatusBar: React.FC<StatusBarProps> = ({
     <div className={`
       fixed top-0 left-0 right-0 h-12 
       bg-black bg-opacity-80 backdrop-blur-md
-      flex items-center justify-between px-4 
+      flex items-center justify-end pr-1 pl-4
       z-40
       transition-all duration-500
       ${allWindowsClosed ? 'translate-y-0' : ''}
     `}>
-      <div className="flex items-center space-x-2">
+      <div className="absolute left-2 md:left-4 flex items-center">
         <TaskbarButton
           title={iframeConfig.blog.title}
           isActive={currentWindow === 'blog'}
@@ -267,7 +267,7 @@ const StatusBar: React.FC<StatusBarProps> = ({
         />
         <Clock allWindowsClosed={allWindowsClosed} />
       </div>
-      <div className="flex items-center space-x-4">
+      <div className="flex items-center space-x-2 md:space-x-4">
         <div ref={volumeRef}>
           <button 
             onClick={() => setIsVolumePanelOpen(!isVolumePanelOpen)}
