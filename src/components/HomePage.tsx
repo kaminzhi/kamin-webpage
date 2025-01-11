@@ -273,11 +273,11 @@ const HomePage: React.FC = () => {
         </div>
       )}
       {showMusicTip && (
-        <div className="fixed top-16 left-1/2 -translate-x-1/2 z-50 animate-music-tip">
+        <div className="fixed top-16 left-1/2 -translate-x-1/2 z-50 animate-music-tip w-[90%] sm:w-auto">
           <div className="bg-black bg-opacity-80 backdrop-blur-md rounded-lg px-4 py-3 text-white shadow-lg">
-            <div className="flex items-center space-x-2">
-              <Music className="w-5 h-5 text-blue-400" />
-              <span className="text-sm">此網頁包含背景音樂，可在右上角音量圖示控制</span>
+            <div className="flex items-center gap-2 whitespace-nowrap">
+              <Music className="w-5 h-5 text-blue-400 flex-shrink-0" />
+              <span className="text-sm">此網頁包含音樂，可在右上角音量圖示控制</span>
             </div>
           </div>
         </div>
