@@ -67,7 +67,7 @@ const BatteryPanel: React.FC<BatteryPanelProps> = ({ isOpen }) => {
           <span className="text-white font-medium">電池</span>
           <div className="flex items-center space-x-2">
             <span className="text-white text-sm">充電中</span>
-            <div className="w-3 h-3 rounded-full bg-green-400"></div>
+            <div className="w-3 h-3 rounded-full bg-green-400" />
           </div>
         </div>
 
@@ -86,7 +86,7 @@ const BatteryPanel: React.FC<BatteryPanelProps> = ({ isOpen }) => {
               <div className="text-red-500 text-sm">不良</div>
             </div>
             <div className="w-full h-1.5 bg-white bg-opacity-20 rounded-full mt-3">
-              <div className="h-full w-[99%] bg-green-400 rounded-full"></div>
+              <div className="h-full w-[99%] bg-green-400 rounded-full" />
             </div>
           </div>
 
@@ -134,7 +134,7 @@ const BatteryPanel: React.FC<BatteryPanelProps> = ({ isOpen }) => {
                     style={{ maxWidth: 'calc(100% - 16px)', textOverflow: 'ellipsis', display: 'inline-block' }}
                     onClick={() => {
                       navigator.clipboard.writeText(Text);
-                      setCopyFeedback('已複製(亂中階有序)');
+                      setCopyFeedback('已複製(Base亂中階有序)');
                       setTimeout(() => setCopyFeedback(''), 2000);
                     }}
                   >

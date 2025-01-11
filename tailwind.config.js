@@ -59,15 +59,17 @@ module.exports = {
         'slide-up-fade': {
           '0%': {
             opacity: '0',
-            transform: 'translateX(-10px)',
+            transform: 'translateX(-30px)',
             width: '0',
-            marginRight: '0'
+            padding: '0',
+            margin: '0'
           },
           '100%': {
             opacity: '1',
             transform: 'translateX(0)',
             width: 'var(--terminal-width, 96px)',
-            marginRight: '0'
+            padding: '0.5rem 1rem',
+            margin: '0'
           }
         },
         'slide-up-fade-reverse': {
@@ -75,29 +77,22 @@ module.exports = {
             opacity: '1',
             transform: 'translateX(0)',
             width: 'var(--terminal-width, 96px)',
-            marginRight: '0',
-            visibility: 'visible'
+            padding: '0.5rem 1rem',
+            margin: '0'
           },
-          '50%': {
-            opacity: '0.5',
-            transform: 'translateX(-5px)',
-            width: 'calc(var(--terminal-width, 96px) / 2)',
-            marginRight: '0',
-            visibility: 'visible'
-          },
-          '99%': { 
-            opacity: '0',
+          '30%': {
+            opacity: '1',
             transform: 'translateX(-10px)',
-            width: '0',
-            marginRight: '0',
-            visibility: 'visible'
+            width: 'calc(var(--terminal-width, 96px) * 0.8)',
+            padding: '0.5rem 1rem',
+            margin: '0'
           },
           '100%': {
             opacity: '0',
-            transform: 'translateX(-10px)',
+            transform: 'translateX(-30px)',
             width: '0',
-            marginRight: '0',
-            visibility: 'hidden'
+            padding: '0',
+            margin: '0'
           }
         },
         'container-expand': {
@@ -110,22 +105,11 @@ module.exports = {
         },
         'container-shrink': {
           '0%': {
-            width: 'var(--final-width)'
-          },
-          '50%': {
-            width: 'calc(var(--final-width) - 46px)'
+            width: 'var(--final-width)',
+            opacity: '1'
           },
           '100%': {
-            width: 'var(--initial-width)'
-          }
-        },
-        'slide-up-fade': {
-          '0%': {
-            transform: 'translateY(10px) scale(0.95)',
-            opacity: '0'
-          },
-          '100%': {
-            transform: 'translateY(0) scale(1)',
+            width: 'var(--initial-width)',
             opacity: '1'
           }
         },
@@ -180,6 +164,24 @@ module.exports = {
             opacity: '0',
             transform: 'translateY(-10px)'
           }
+        },
+        'music-tip-in': {
+          '0%': {
+            opacity: '0',
+            transform: 'translate(-50%, -10px)'
+          },
+          '10%': {
+            opacity: '1',
+            transform: 'translate(-50%, 0)'
+          },
+          '90%': {
+            opacity: '1',
+            transform: 'translate(-50%, 0)'
+          },
+          '100%': {
+            opacity: '0',
+            transform: 'translate(-50%, -10px)'
+          }
         }
       },
       animation: {
@@ -193,15 +195,16 @@ module.exports = {
         'hint-bounce': 'hint-bounce 2s ease-in-out infinite',
         'mode-rotate': 'mode-rotate 0.3s ease-out',
         'marquee': 'marquee 10s linear infinite',
-        'slide-up-fade': 'slide-up-fade 0.3s ease-out forwards',
-        'slide-up-fade-reverse': 'slide-up-fade-reverse 0.7s ease-in-out forwards',
-        'container-expand': 'container-expand 0.5s ease-out forwards',
-        'container-shrink': 'container-shrink 0.7s ease-in-out forwards',
+        'slide-up-fade': 'slide-up-fade 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards',
+        'slide-up-fade-reverse': 'slide-up-fade-reverse 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards',
+        'container-expand': 'container-expand 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards',
+        'container-shrink': 'container-shrink 1s cubic-bezier(0.4, 0, 0.2, 1) forwards',
         'fade-in': 'fade-in 0.3s ease-out forwards',
         'fade-in-up': 'fade-in-up 0.3s ease-out forwards',
         'fade-out-down': 'fade-out-down 0.5s ease-in-out forwards',
         'slide-down': 'slide-down 0.3s ease-out forwards',
-        'slide-up': 'slide-up 0.3s ease-out forwards'
+        'slide-up': 'slide-up 0.3s ease-out forwards',
+        'music-tip': 'music-tip-in 4s ease-in-out forwards'
       }
     }
   },

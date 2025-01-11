@@ -7,6 +7,7 @@ import TaskbarButton from '@/components/TaskbarButton';
 import { WindowState } from '../../types';
 import Background from './Background';
 import { viewConfig } from '@/config/view';
+import { Music } from 'lucide-react';
 
 const HomePage: React.FC = () => {
   const [isLoaded, setIsLoaded] = useState(false);
@@ -25,6 +26,7 @@ const HomePage: React.FC = () => {
   const [containerRef, setContainerRef] = useState<HTMLDivElement | null>(null);
   const [initialWidth, setInitialWidth] = useState<number>(0);
   const [finalWidth, setFinalWidth] = useState<number>(0);
+  const [showMusicTip, setShowMusicTip] = useState(false);
 
   // 檢查視窗是否關閉
   const allWindowsClosed = useMemo(() => {
@@ -102,6 +104,14 @@ const HomePage: React.FC = () => {
       return () => window.removeEventListener('resize', updateWidths);
     }
   }, [containerRef, isVpnConnected]);
+
+  useEffect(() => {
+    setIsLoaded(true);
+    const timer = setTimeout(() => {
+      setShowMusicTip(true);
+    }, 1000);
+    return () => clearTimeout(timer);
+  }, []);
 
   const handleWindowClick = (window: string) => {
     setWindows(prev => {
@@ -262,6 +272,16 @@ const HomePage: React.FC = () => {
           </div>
         </div>
       )}
+      {showMusicTip && (
+        <div className="fixed top-16 left-1/2 -translate-x-1/2 z-50 animate-music-tip">
+          <div className="bg-black bg-opacity-80 backdrop-blur-md rounded-lg px-4 py-3 text-white shadow-lg">
+            <div className="flex items-center space-x-2">
+              <Music className="w-5 h-5 text-blue-400" />
+              <span className="text-sm">此網頁包含背景音樂，可在右上角音量圖示控制</span>
+            </div>
+          </div>
+        </div>
+      )}
       <div className={`h-[calc(100vh-6rem)] mt-14 ${isLoaded ? 'opacity-100' : 'opacity-0'}`}>
         {Object.entries(windows).map(([key, window]) =>
           window.isOpen ? (
@@ -284,7 +304,7 @@ const HomePage: React.FC = () => {
           bg-black bg-opacity-80 backdrop-blur-md rounded-full 
           items-center z-50 
           transition-all duration-500
-          ${isVpnConnected !== undefined ? (isVpnConnected ? 'animate-container-expand' : 'animate-container-shrink') : ''}
+          ${isVpnConnected !== undefined ? (isVpnConnected ? 'animate-container-expand' : 'animate-container-shrink delay-[1000ms]') : ''}
         `}
         style={{
           transform: 'translateX(-50%)',
@@ -292,7 +312,7 @@ const HomePage: React.FC = () => {
           '--terminal-width': isMobile ? '82px' : '96px'
         } as React.CSSProperties}
       >
-        <div className="flex items-center pl-2">
+        <div className="flex items-center pl-2 relative transition-all duration-300">
           {Object.entries(windows)
             .filter(([key]) => key !== 'blog')
             .sort(([keyA], [keyB]) => {
@@ -307,19 +327,19 @@ const HomePage: React.FC = () => {
                 isActive={window.isActive}
                 isOpen={window.isOpen}
                 onClick={() => handleWindowClick(key)}
-                className={
-                  key === 'terminal' 
-                    ? `${isVpnConnected !== undefined ? (isVpnConnected ? 'animate-slide-up-fade' : 'animate-slide-up-fade-reverse') : ''}`
-                    : 'mr-2'
-                }
+                className={`
+                  ${key === 'terminal' 
+                    ? `${isVpnConnected !== undefined ? (isVpnConnected ? 'animate-slide-up-fade' : 'animate-slide-up-fade-reverse') : ''} ${!isVpnConnected ? 'invisible' : ''}`
+                    : `mr-2 transition-all duration-300`
+                  }
+                `}
                 style={
-                  key === 'terminal' && !isVpnConnected
-                    ? { 
-                        width: 0,
-                        opacity: 0,
-                        overflow: 'hidden',
-                        margin: 0,
-                        padding: 0
+                  key === 'terminal'
+                    ? {
+                        width: isVpnConnected ? undefined : 0,
+                        padding: isVpnConnected ? undefined : 0,
+                        margin: isVpnConnected ? undefined : 0,
+                        opacity: isVpnConnected ? undefined : 0
                       }
                     : undefined
                 }
